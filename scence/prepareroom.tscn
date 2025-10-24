@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://dfsij536tx622"]
+[gd_scene load_steps=14 format=4 uid="uid://dfsij536tx622"]
 
 [ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_pqeb8"]
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_n64i8"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="4_gy1ph"]
 [ext_resource type="Script" uid="uid://xyfgng1bdyba" path="res://scripts/SpellSelectionAltar.gd" id="5_n64i8"]
 [ext_resource type="Script" uid="uid://biwrjop0fu38c" path="res://scripts/spells/game_spell_library.gd" id="6_fhu00"]
+[ext_resource type="Script" uid="uid://bw5d1bsq7smpc" path="res://scripts/player_spell_test.gd" id="7_test_script"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hf1b"]
 texture = ExtResource("1_pqeb8")
@@ -302,3 +303,6 @@ text = "E"
 
 [node name="GameSpellLibrary" type="Node" parent="."]
 script = ExtResource("6_fhu00")
+
+[node name="PlayerSpellTest" type="Node" parent="."]
+script = ExtResource("7_test_script")
