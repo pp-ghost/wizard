@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://darcta4vbpo38"
-path="res://.godot/imported/skull.png-d96903b4b77c18d4285afe46f2ee3eea.ctex"
+uid="uid://btjx8njgu8jl3"
+path="res://.godot/imported/side_torch2.png-ebf2d72384f9bfbc164306c87e5aa33d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://asset/skull.png"
-dest_files=["res://.godot/imported/skull.png-d96903b4b77c18d4285afe46f2ee3eea.ctex"]
+source_file="res://asset/decorate/side_torch2.png"
+dest_files=["res://.godot/imported/side_torch2.png-ebf2d72384f9bfbc164306c87e5aa33d.ctex"]
 
 [params]
 

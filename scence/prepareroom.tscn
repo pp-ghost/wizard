@@ -1,7 +1,7 @@
-[gd_scene load_steps=17 format=4 uid="uid://dfsij536tx622"]
+[gd_scene load_steps=18 format=4 uid="uid://dfsij536tx622"]
 
 [ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_pqeb8"]
-[ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_n64i8"]
+[ext_resource type="Texture2D" path="res://asset/player1.png" id="2_n64i8"]
 [ext_resource type="PackedScene" uid="uid://c3rsyj5sdw6eb" path="res://scence/something/arrow.tscn" id="3_eqjih"]
 [ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="3_fhu00"]
 [ext_resource type="PackedScene" uid="uid://odoqbmgd787h" path="res://scence/something/flag.tscn" id="4_6xugq"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bw5d1bsq7smpc" path="res://scripts/player_spell_test.gd" id="7_test_script"]
 [ext_resource type="PackedScene" uid="uid://inhq53t4wec3" path="res://scence/something/sidetorch.tscn" id="10_cxhj0"]
 [ext_resource type="PackedScene" uid="uid://dxs7ucqvhcqeq" path="res://scence/something/skull.tscn" id="11_ns7c0"]
+[ext_resource type="PackedScene" uid="uid://65qwwd5002vl" path="res://scence/something/siderorch2.tscn" id="12_cxhj0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hf1b"]
 texture = ExtResource("1_pqeb8")
@@ -218,7 +219,7 @@ animations = [{
 [node name="prepareroom" type="Node2D"]
 
 [node name="wallE" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAALAAQAAAAKAAUAAAA=")
+tile_map_data = PackedByteArray("AAALAAQAAAAKAAUAAAAGAAgAAAAKAAUAAAAEAAgAAAAKAAUAAAAFAAgAAAAKAAUAAAADAAgAAAAKAAUAAAADAAkAAAAKAAUAAAADAAoAAAAKAAUAAAADAAsAAAAKAAUAAAADAAwAAAAKAAUAAAAEAAwAAAAKAAUAAAAFAAwAAAAKAAUAAAAGAAwAAAAKAAUAAAAGAA0AAAAKAAUAAAAGAA4AAAAKAAUAAAAGAA8AAAAKAAUAAAAJAA8AAAAKAAUAAAAIAA8AAAAKAAUAAAAHAA8AAAAKAAUAAAAJABAAAAAKAAUAAAAJABEAAAAKAAUAAAAJABIAAAAKAAUAAAAKABIAAAAKAAUAAAALABIAAAAKAAUAAAAMABIAAAAKAAUAAAANABIAAAAKAAUAAAANABEAAAAKAAUAAAANABAAAAAKAAUAAAANAA8AAAAKAAUAAAAOAA8AAAAKAAUAAAAPAA8AAAAKAAUAAAAQAA8AAAAKAAUAAAAQAA4AAAAKAAUAAAAQAA0AAAAKAAUAAAAQAAwAAAAKAAUAAAARAAwAAAAKAAUAAAASAAwAAAAKAAUAAAATAAwAAAAKAAUAAAATAAgAAAAKAAUAAAATAAkAAAAKAAUAAAATAAoAAAAKAAUAAAATAAsAAAAKAAUAAAASAAgAAAAKAAUAAAARAAgAAAAKAAUAAAAQAAgAAAAKAAUAAAAQAAcAAAAKAAUAAAAQAAYAAAAKAAUAAAAQAAUAAAAKAAUAAAAPAAUAAAAKAAUAAAAOAAUAAAAKAAUAAAANAAUAAAAKAAUAAAANAAQAAAAKAAUAAAANAAMAAAAKAAUAAAANAAIAAAAKAAUAAAAMAAIAAAAKAAUAAAALAAIAAAAKAAUAAAAKAAIAAAAKAAUAAAAJAAIAAAAKAAUAAAAJAAMAAAAKAAUAAAAJAAQAAAAKAAUAAAAJAAUAAAAKAAUAAAAIAAUAAAAKAAUAAAAHAAUAAAAKAAUAAAAGAAUAAAAKAAUAAAAGAAYAAAAKAAUAAAAGAAcAAAAKAAUAAAA=")
 tile_set = SubResource("TileSet_fmkco")
 
 [node name="floor" type="TileMapLayer" parent="."]
@@ -296,4 +297,36 @@ frame_progress = 0.6705997
 
 [node name="skull" parent="." instance=ExtResource("11_ns7c0")]
 position = Vector2(184, 68)
+autoplay = "default"
+
+[node name="AnimatedSprite2D" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(248, 95)
+autoplay = "default"
+
+[node name="AnimatedSprite2D2" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(248, 133)
+autoplay = "default"
+
+[node name="AnimatedSprite2D3" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(248, 195)
+autoplay = "default"
+
+[node name="AnimatedSprite2D4" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(248, 233)
+autoplay = "default"
+
+[node name="AnimatedSprite2D5" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(200, 44)
+autoplay = "default"
+
+[node name="sidetorch5" parent="." instance=ExtResource("10_cxhj0")]
+position = Vector2(168, 43)
+autoplay = "default"
+
+[node name="sidetorch6" parent="." instance=ExtResource("10_cxhj0")]
+position = Vector2(168, 280)
+autoplay = "default"
+
+[node name="AnimatedSprite2D6" parent="." instance=ExtResource("12_cxhj0")]
+position = Vector2(200, 281)
 autoplay = "default"
