@@ -19,8 +19,8 @@ var roll_cooldown_duration: float = 2.0  # 翻滚冷却时间
 var input_enabled: bool = true
 
 func _ready():
-	# 设置玩家初始位置为 (64, 64)
-	position = Vector2(64, 64)
+	# 设置玩家初始位置为 (150, 150)
+	position = Vector2(150, 150)
 	# 设置初始动画为idle
 	animated_sprite.play("idle")
 
