@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=4 uid="uid://dfsij536tx622"]
+[gd_scene load_steps=12 format=4 uid="uid://dfsij536tx622"]
 
-[ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_2opv3"]
-[ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_6hf1b"]
-[ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="3_fmkco"]
-[ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="4_im62x"]
+[ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_pqeb8"]
+[ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_n64i8"]
+[ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="3_fhu00"]
+[ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="4_gy1ph"]
+[ext_resource type="Script" uid="uid://xyfgng1bdyba" path="res://scripts/SpellSelectionAltar.gd" id="5_n64i8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hf1b"]
-texture = ExtResource("1_2opv3")
+texture = ExtResource("1_pqeb8")
 0:0/size_in_atlas = Vector2i(2, 2)
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(-8, -8)
@@ -230,7 +231,7 @@ texture = ExtResource("1_2opv3")
 10:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fmkco"]
-texture = ExtResource("2_6hf1b")
+texture = ExtResource("2_n64i8")
 4:6/size_in_atlas = Vector2i(2, 2)
 4:6/0 = 0
 4:6/0/texture_origin = Vector2i(-8, -8)
@@ -243,10 +244,28 @@ terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_6hf1b")
 sources/1 = SubResource("TileSetAtlasSource_fmkco")
 
-[node name="gamemap" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pqeb8"]
+size = Vector2(26, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n64i8"]
+atlas = ExtResource("1_pqeb8")
+region = Rect2(48, 144, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fhu00"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n64i8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="prepareroom" type="Node2D"]
 
 [node name="wallE" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAAAAAAAAAKAAUAAAABAAAAAAAKAAUAAAACAAAAAAAKAAUAAAADAAAAAAAKAAUAAAAEAAAAAAAKAAUAAAAFAAAAAAAKAAUAAAAGAAAAAAAKAAUAAAAHAAAAAAAKAAUAAAAIAAAAAAAKAAUAAAAJAAAAAAAKAAUAAAAKAAAAAAAKAAUAAAALAAAAAAAKAAUAAAAMAAAAAAAKAAUAAAANAAAAAAAKAAUAAAAOAAAAAAAKAAUAAAAPAAAAAAAKAAUAAAAQAAAAAAAKAAUAAAARAAAAAAAKAAUAAAASAAAAAAAKAAUAAAATAAAAAAAKAAUAAAAUAAAAAAAKAAUAAAAVAAAAAAAKAAUAAAAAAAEAAAAKAAUAAAAAAAIAAAAKAAUAAAAAAAMAAAAKAAUAAAAAAAQAAAAKAAUAAAAAAAUAAAAKAAUAAAAAAAYAAAAKAAUAAAAAAAcAAAAKAAUAAAAAAAgAAAAKAAUAAAAAAAkAAAAKAAUAAAAAAAoAAAAKAAUAAAAAAAsAAAAKAAUAAAAAAAwAAAAKAAUAAAAAAA0AAAAKAAUAAAAAAA4AAAAKAAUAAAAAAA8AAAAKAAUAAAAAABAAAAAKAAUAAAAAABEAAAAKAAUAAAAAABIAAAAKAAUAAAAAABMAAAAKAAUAAAAAABQAAAAKAAUAAAAAABUAAAAKAAUAAAAFAAcAAAAKAAUAAAAGAAcAAAAKAAUAAAAHAAcAAAAKAAUAAAAIAAcAAAAKAAUAAAAJAAcAAAAKAAUAAAAKAAcAAAAKAAUAAAALAAcAAAAKAAUAAAAMAAcAAAAKAAUAAAANAAcAAAAKAAUAAAAOAAcAAAAKAAUAAAAPAAcAAAAKAAUAAAAPAAgAAAAKAAUAAAAPAAkAAAAKAAUAAAAPAAoAAAAKAAUAAAAFAAgAAAAKAAUAAAAFAAkAAAAKAAUAAAAFAAoAAAAKAAUAAAAFAAsAAAAKAAUAAAAFAAwAAAAKAAUAAAAFAA0AAAAKAAUAAAAFAA4AAAAKAAUAAAAFAA8AAAAKAAUAAAAFABAAAAAKAAUAAAAGABAAAAAKAAUAAAAHABAAAAAKAAUAAAAIABAAAAAKAAUAAAAJABAAAAAKAAUAAAAKABAAAAAKAAUAAAALABAAAAAKAAUAAAAMABAAAAAKAAUAAAANABAAAAAKAAUAAAAOABAAAAAKAAUAAAAPABAAAAAKAAUAAAAPAA8AAAAKAAUAAAAPAA4AAAAKAAUAAAAPAA0AAAAKAAUAAAA=")
+tile_map_data = PackedByteArray("AAAAAAAAAAAKAAUAAAABAAAAAAAKAAUAAAACAAAAAAAKAAUAAAADAAAAAAAKAAUAAAAEAAAAAAAKAAUAAAAFAAAAAAAKAAUAAAAGAAAAAAAKAAUAAAAHAAAAAAAKAAUAAAAIAAAAAAAKAAUAAAAJAAAAAAAKAAUAAAAKAAAAAAAKAAUAAAALAAAAAAAKAAUAAAAMAAAAAAAKAAUAAAANAAAAAAAKAAUAAAAOAAAAAAAKAAUAAAAPAAAAAAAKAAUAAAAQAAAAAAAKAAUAAAARAAAAAAAKAAUAAAASAAAAAAAKAAUAAAATAAAAAAAKAAUAAAAUAAAAAAAKAAUAAAAVAAAAAAAKAAUAAAAAAAEAAAAKAAUAAAAAAAIAAAAKAAUAAAAAAAMAAAAKAAUAAAAAAAQAAAAKAAUAAAAAAAUAAAAKAAUAAAAAAAYAAAAKAAUAAAAAAAcAAAAKAAUAAAAAAAgAAAAKAAUAAAAAAAkAAAAKAAUAAAAAAAoAAAAKAAUAAAAAAAsAAAAKAAUAAAAAAAwAAAAKAAUAAAAAAA0AAAAKAAUAAAAAAA4AAAAKAAUAAAAAAA8AAAAKAAUAAAAAABAAAAAKAAUAAAAAABEAAAAKAAUAAAAAABIAAAAKAAUAAAAAABMAAAAKAAUAAAAAABQAAAAKAAUAAAAAABUAAAAKAAUAAAAFAAcAAAAKAAUAAAAGAAcAAAAKAAUAAAAHAAcAAAAKAAUAAAAIAAcAAAAKAAUAAAAJAAcAAAAKAAUAAAAKAAcAAAAKAAUAAAALAAcAAAAKAAUAAAAMAAcAAAAKAAUAAAANAAcAAAAKAAUAAAAOAAcAAAAKAAUAAAAPAAcAAAAKAAUAAAAPAAgAAAAKAAUAAAAPAAkAAAAKAAUAAAAPAAoAAAAKAAUAAAAFAAgAAAAKAAUAAAAFAAkAAAAKAAUAAAAFAAoAAAAKAAUAAAAFAAsAAAAKAAUAAAAFAAwAAAAKAAUAAAAFAA0AAAAKAAUAAAAFAA4AAAAKAAUAAAAFAA8AAAAKAAUAAAAFABAAAAAKAAUAAAAGABAAAAAKAAUAAAAHABAAAAAKAAUAAAAIABAAAAAKAAUAAAAJABAAAAAKAAUAAAAKABAAAAAKAAUAAAALABAAAAAKAAUAAAAMABAAAAAKAAUAAAANABAAAAAKAAUAAAAOABAAAAAKAAUAAAAPABAAAAAKAAUAAAAPAA8AAAAKAAUAAAAPAA4AAAAKAAUAAAAPAA0AAAAKAAUAAAALAAQAAAAKAAUAAAA=")
 tile_set = SubResource("TileSet_fmkco")
 
 [node name="floor" type="TileMapLayer" parent="."]
@@ -256,7 +275,26 @@ tile_set = SubResource("TileSet_fmkco")
 [node name="wall" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_fmkco")
 
-[node name="player" parent="." instance=ExtResource("3_fmkco")]
+[node name="player" parent="." instance=ExtResource("3_fhu00")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-script = ExtResource("4_im62x")
+script = ExtResource("4_gy1ph")
+
+[node name="SpellSelectionAltar" type="Area2D" parent="."]
+position = Vector2(183, 67)
+script = ExtResource("5_n64i8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpellSelectionAltar"]
+position = Vector2(1, 0.5)
+shape = SubResource("RectangleShape2D_pqeb8")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="SpellSelectionAltar"]
+sprite_frames = SubResource("SpriteFrames_fhu00")
+animation = &"idle"
+
+[node name="Label" type="Label" parent="SpellSelectionAltar"]
+offset_left = -4.0
+offset_top = -32.0
+offset_right = 36.0
+offset_bottom = -9.0
+text = "E"
