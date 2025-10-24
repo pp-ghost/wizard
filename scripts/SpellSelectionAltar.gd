@@ -46,20 +46,20 @@ func _input(event):
 	if event is InputEventKey and event.pressed:
 		print("SpellSelectionAltar: 检测到按键 - ", event.keycode, " 玩家在范围内: ", player_in_range)
 	
-	# 检测E键按下
-	if (event.is_action_pressed("ui_accept") or (event is InputEventKey and event.pressed and event.keycode == KEY_E)) and player_in_range:
+	# 检测F键按下
+	if (event.is_action_pressed("ui_accept") or (event is InputEventKey and event.pressed and event.keycode == KEY_F)) and player_in_range:
 		# 检查是否已经有法术选择界面打开
 		var existing_ui = get_tree().current_scene.get_node_or_null("SpellSelectionUI")
 		if existing_ui:
 			print("SpellSelectionAltar: 关闭已打开的法术选择界面")
 			existing_ui.queue_free()
 		else:
-			print("SpellSelectionAltar: 玩家按下了E键，准备打开法术选择界面")
+			print("SpellSelectionAltar: 玩家按下了F键，准备打开法术选择界面")
 			open_spell_selection()
-	elif event is InputEventKey and event.pressed and event.keycode == KEY_E:
-		print("SpellSelectionAltar: 检测到E键，但玩家不在范围内")
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_F:
+		print("SpellSelectionAltar: 检测到F键，但玩家不在范围内")
 	elif player_in_range:
-		print("SpellSelectionAltar: 玩家在范围内，等待E键输入...")
+		print("SpellSelectionAltar: 玩家在范围内，等待F键输入...")
 
 func _on_body_entered(body):
 	# 检查进入的是否是玩家
@@ -82,7 +82,7 @@ func show_interaction_prompt():
 	# 显示交互提示
 	if interaction_label:
 		interaction_label.visible = true
-		print("SpellSelectionAltar: 显示交互提示 - 按E选择法术")
+		print("SpellSelectionAltar: 显示交互提示 - 按F选择法术")
 	else:
 		print("SpellSelectionAltar: 警告 - 未找到Label节点")
 
