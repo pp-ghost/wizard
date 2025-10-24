@@ -15,6 +15,16 @@ run/main_scene="uid://dfsij536tx622"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1080
+window/size/viewport_height=720
+window/size/resizable=false
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+window/size/mode=2
+window/per_pixel_transparency/allowed=true
+
 [dotnet]
 
 project/assembly_name="wizard"
