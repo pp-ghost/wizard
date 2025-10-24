@@ -15,6 +15,9 @@ var roll_duration: float = 0.5  # 翻滚持续时间
 var roll_cooldown: float = 0.0
 var roll_cooldown_duration: float = 2.0  # 翻滚冷却时间
 
+# 输入控制
+var input_enabled: bool = true
+
 func _ready():
 	# 设置玩家初始位置为 (64, 64)
 	position = Vector2(64, 64)
@@ -22,6 +25,24 @@ func _ready():
 	animated_sprite.play("idle")
 
 func _physics_process(delta):
+	# 检查输入是否被暂停
+	if not input_enabled or has_meta("input_paused"):
+		# 输入被暂停，只处理动画和物理
+		if is_rolling:
+			roll_timer -= delta
+			if roll_timer <= 0:
+				is_rolling = false
+				roll_cooldown = roll_cooldown_duration
+				animated_sprite.play("idle")
+		
+		# 停止移动
+		velocity = Vector2.ZERO
+		if not is_rolling:
+			animated_sprite.play("idle")
+		
+		move_and_slide()
+		return
+	
 	# 处理翻滚状态
 	if is_rolling:
 		roll_timer -= delta
@@ -83,3 +104,8 @@ func start_roll():
 	is_rolling = true
 	roll_timer = roll_duration
 	animated_sprite.play("roll")
+
+# 设置输入状态
+func set_input_enabled(enabled: bool):
+	input_enabled = enabled
+	print("Player: 输入状态设置为 ", "启用" if enabled else "禁用")

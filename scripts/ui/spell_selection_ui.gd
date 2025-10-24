@@ -1,7 +1,7 @@
 extends Control
 
 # UI节点引用
-@onready var spell_list: VBoxContainer = $MainPanel/SpellList
+@onready var spell_list: VBoxContainer = $MainPanel/SpellList/VBoxContainer
 @onready var close_button: Button = $MainPanel/CloseButton
 
 # 法术库引用
@@ -85,13 +85,13 @@ func select_spell_by_index(index: int):
 # 更新选择视觉效果
 func update_selection_visual():
 	for i in range(spell_list.get_child_count()):
-		var button = spell_list.get_child(i)
+		var spell_container = spell_list.get_child(i)
 		if i == current_selected_index:
 			# 高亮当前选择
-			button.modulate = Color(1.2, 1.2, 1.0, 1.0)  # 黄色高亮
+			spell_container.modulate = Color(1.2, 1.2, 1.0, 1.0)  # 黄色高亮
 		else:
 			# 恢复正常颜色
-			button.modulate = Color.WHITE
+			spell_container.modulate = Color.WHITE
 
 # 加载可用法术
 func load_available_spells():
@@ -110,15 +110,51 @@ func create_spell_buttons():
 
 # 创建单个法术按钮
 func create_spell_button(spell: SpellData):
-	var button = Button.new()
-	button.text = spell.spell_name + " (法力: " + str(spell.mana_cost) + ")"
-	button.custom_minimum_size = Vector2(300, 50)
+	# 创建主容器
+	var spell_container = HBoxContainer.new()
+	spell_container.custom_minimum_size = Vector2(350, 60)
 	
-	# 连接按钮信号
+	# 创建图标
+	var icon_texture = TextureRect.new()
+	icon_texture.custom_minimum_size = Vector2(48, 48)
+	icon_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if spell.spell_icon:
+		icon_texture.texture = spell.spell_icon
+	else:
+		# 如果没有图标，显示占位符
+		icon_texture.modulate = Color.GRAY
+	
+	# 创建文本容器
+	var text_container = VBoxContainer.new()
+	text_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	# 创建法术名称标签
+	var name_label = Label.new()
+	name_label.text = spell.spell_name
+	name_label.add_theme_font_size_override("font_size", 16)
+	
+	# 创建法术信息标签
+	var info_label = Label.new()
+	info_label.text = "法力消耗: " + str(spell.mana_cost) + " | 伤害: " + str(spell.damage)
+	info_label.add_theme_font_size_override("font_size", 12)
+	info_label.modulate = Color(0.8, 0.8, 0.8)
+	
+	# 创建按钮
+	var button = Button.new()
+	button.text = "装备"
+	button.custom_minimum_size = Vector2(80, 40)
 	button.pressed.connect(_on_spell_selected.bind(spell))
 	
+	# 组装UI
+	text_container.add_child(name_label)
+	text_container.add_child(info_label)
+	
+	spell_container.add_child(icon_texture)
+	spell_container.add_child(text_container)
+	spell_container.add_child(button)
+	
 	# 添加到列表
-	spell_list.add_child(button)
+	spell_list.add_child(spell_container)
 	
 	print("SpellSelectionUI: 创建法术按钮 - ", spell.spell_name)
 
@@ -141,15 +177,18 @@ func update_spell_buttons():
 	var equipped_spells = game_library.get_equipped_spells()
 	
 	for i in range(spell_list.get_child_count()):
-		var button = spell_list.get_child(i)
+		var spell_container = spell_list.get_child(i)
+		var button = spell_container.get_child(2)  # 按钮是第3个子节点
 		var spell = available_spells[i]
 		
 		if spell in equipped_spells:
-			button.text = spell.spell_name + " (已装备)"
+			button.text = "已装备"
 			button.disabled = true
+			button.modulate = Color(0.5, 0.5, 0.5)  # 灰色表示已装备
 		else:
-			button.text = spell.spell_name + " (法力: " + str(spell.mana_cost) + ")"
+			button.text = "装备"
 			button.disabled = false
+			button.modulate = Color.WHITE
 	
 	# 更新选择视觉效果
 	update_selection_visual()
@@ -157,17 +196,43 @@ func update_spell_buttons():
 # 关闭UI
 func _on_close_pressed():
 	print("SpellSelectionUI: 关闭法术选择界面")
+	# 恢复玩家输入
+	resume_player_input()
 	queue_free()
 
 # 显示UI
 func show_ui():
 	visible = true
+	# 暂停玩家输入
+	pause_player_input()
 	update_spell_buttons()
 	show_instructions()
 
 # 隐藏UI
 func hide_ui():
 	visible = false
+
+# 暂停玩家输入
+func pause_player_input():
+	var player = get_tree().current_scene.get_node_or_null("player")
+	if player and player.has_method("set_input_enabled"):
+		player.set_input_enabled(false)
+		print("SpellSelectionUI: 已暂停玩家输入")
+	elif player:
+		# 如果玩家没有set_input_enabled方法，设置一个标志
+		player.set_meta("input_paused", true)
+		print("SpellSelectionUI: 已设置玩家输入暂停标志")
+
+# 恢复玩家输入
+func resume_player_input():
+	var player = get_tree().current_scene.get_node_or_null("player")
+	if player and player.has_method("set_input_enabled"):
+		player.set_input_enabled(true)
+		print("SpellSelectionUI: 已恢复玩家输入")
+	elif player:
+		# 移除输入暂停标志
+		player.remove_meta("input_paused")
+		print("SpellSelectionUI: 已移除玩家输入暂停标志")
 
 # 显示操作说明
 func show_instructions():
