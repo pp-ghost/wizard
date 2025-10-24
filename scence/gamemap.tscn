@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=4 uid="uid://dfsij536tx622"]
+[gd_scene load_steps=7 format=4 uid="uid://dfsij536tx622"]
 
 [ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_2opv3"]
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_6hf1b"]
+[ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="3_fmkco"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hf1b"]
 texture = ExtResource("1_2opv3")
@@ -245,9 +246,10 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAIAAAAAAAQAAAAAAAI
 tile_set = SubResource("TileSet_fmkco")
 
 [node name="wall" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAPAAsAAQAEAAYAAAACAAsAAQAEAAYAAAAMABIAAQAEAAYAAAA=")
 tile_set = SubResource("TileSet_fmkco")
 
 [node name="floorE" type="TileMapLayer" parent="."]
 
 [node name="wallE" type="TileMapLayer" parent="."]
+
+[node name="player" parent="." instance=ExtResource("3_fmkco")]

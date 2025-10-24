@@ -1,5 +1,6 @@
-[gd_scene load_steps=22 format=3 uid="uid://bu1blwum7plry"]
+[gd_scene load_steps=23 format=3 uid="uid://bu1blwum7plry"]
 
+[ext_resource type="Script" uid="uid://dadumy7af4wy6" path="res://scripts/player.gd" id="1_mjc1j"]
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="1_uwcw8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_do3ar"]
@@ -150,6 +151,7 @@ animations = [{
 size = Vector2(9, 25)
 
 [node name="player" type="CharacterBody2D"]
+script = ExtResource("1_mjc1j")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_qav0y")
