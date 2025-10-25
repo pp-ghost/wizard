@@ -26,6 +26,7 @@ var input_enabled: bool = true
 var available_spells: Array[SpellData] = []  # 可用法术列表
 var spell_cooldowns: Dictionary = {}  # 法术冷却时间记录
 var spell_input_states: Dictionary = {}  # 法术按键状态记录
+var is_attacking: bool = false  # 是否正在攻击
 
 func _ready():
 	# 设置玩家初始位置为 (150, 150)
@@ -131,7 +132,24 @@ func cast_spell_to_mouse(spell: SpellData):
 	
 	# 施法
 	print("Player: 施放 ", spell.spell_name)
+	
+	# 设置攻击状态并播放攻击动画
+	is_attacking = true
+	print("Player: 当前动画: ", animated_sprite.animation)
+	animated_sprite.play("attack")
+	print("Player: 播放攻击动画，新动画: ", animated_sprite.animation)
+	
+	# 等待攻击动画播放到第4帧
+	await get_tree().create_timer(0.2).timeout  # 假设每帧0.1秒，第4帧是0.4秒
+	print("Player: 攻击动画第4帧，生成法术")
+	
+	# 在第4帧生成法术
 	var projectile = spell_caster.cast_spell(spell, global_position, spell_direction)
+	
+	# 继续等待动画完成
+	await animated_sprite.animation_finished
+	print("Player: 攻击动画播放完成")
+	is_attacking = false
 	
 	if projectile:
 		print("Player: 法术施放成功")
@@ -232,14 +250,20 @@ func _physics_process(delta):
 		elif input_vector.x < 0:
 			animated_sprite.flip_h = true   # 向左移动，翻转
 		
-		# 播放动画
-		if is_rolling:
+		# 播放动画（攻击时不被覆盖）
+		if is_attacking:
+			# 攻击动画正在播放，不覆盖
+			pass
+		elif is_rolling:
 			animated_sprite.play("roll")
 		else:
 			animated_sprite.play("move")
 	else:
-		# 播放待机动画
-		if not is_rolling:
+		# 播放待机动画（攻击时不被覆盖）
+		if is_attacking:
+			# 攻击动画正在播放，不覆盖
+			pass
+		elif not is_rolling:
 			animated_sprite.play("idle")
 	
 	# 设置速度

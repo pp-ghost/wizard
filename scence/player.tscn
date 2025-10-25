@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="1_uwcw8"]
 [ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="3_3j5vv"]
 [ext_resource type="Script" uid="uid://biwrjop0fu38c" path="res://scripts/spells/game_spell_library.gd" id="4_qav0y"]
-[ext_resource type="Script" path="res://scripts/spells/spell_caster.gd" id="5_spell_caster"]
+[ext_resource type="Script" uid="uid://bgeenmilh75pc" path="res://scripts/spells/spell_caster.gd" id="5_spell_caster"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_do3ar"]
 atlas = ExtResource("1_uwcw8")
@@ -131,7 +131,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"attack",
-"speed": 10.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -205,8 +205,8 @@ script = ExtResource("1_mjc1j")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_qav0y")
-animation = &"roll"
-frame = 5
+animation = &"attack"
+frame = 3
 frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
