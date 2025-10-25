@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=4 uid="uid://cjhuu5etmbh0h"]
+[gd_scene load_steps=43 format=4 uid="uid://cjhuu5etmbh0h"]
 
 [ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_bgoec"]
 [ext_resource type="Texture2D" uid="uid://ccj2xaidskcmr" path="res://asset/Dungeon assets pack/Dungeon assets pack/Map/Decorations_tileset.png" id="2_b2esl"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="10_b2esl"]
 [ext_resource type="Script" uid="uid://bkvjpepf74320" path="res://scripts/portal_back.gd" id="11_portal_back"]
 [ext_resource type="PackedScene" uid="uid://bhug8i3fy4ljt" path="res://host/scence/net_player.tscn" id="13_1mpip"]
-[ext_resource type="Script" uid="uid://beilfnpn4w7hv" path="res://scripts/client_network_manager.gd" id="40_client_network"]
+[ext_resource type="Script" uid="uid://dmokkap56hgxt" path="res://scripts/client_network.gd" id="40_client_network"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k1kwf"]
 texture = ExtResource("1_bgoec")

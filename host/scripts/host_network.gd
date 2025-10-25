@@ -19,7 +19,7 @@ func _ready():
 	print("HostNetwork: 服务端网络管理器已初始化")
 
 # 启动服务端
-func start_server(port: int = 7000):
+func start_server(port: int = 7000) -> bool:
 	server_port = port
 	
 	# 创建ENet对等体
@@ -77,6 +77,10 @@ func _on_peer_connected(peer_id: int):
 	
 	print("HostNetwork: 当前在线玩家数:", player_count)
 	player_connected.emit(peer_id, player_info)
+	
+	# 发送测试RPC给新连接的客户端
+	print("HostNetwork: 发送测试RPC给客户端 - ID:", peer_id)
+	rpc_id(peer_id, "test_simple_rpc", "Welcome from server!")
 
 # 玩家断开连接事件
 func _on_peer_disconnected(peer_id: int):
@@ -106,16 +110,60 @@ func get_player_count() -> int:
 func is_server_running() -> bool:
 	return peer != null and peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
 
-# RPC：接收客户端数据并广播
+# 简单的测试RPC
 @rpc("any_peer", "unreliable")
-func receive_player_data(player_id: int, data: Dictionary):
-	print("HostNetwork: 接收玩家数据 - ID:", player_id, " 数据:", data)
-	
-	# 广播给所有其他客户端
-	rpc("sync_player_data", player_id, data)
-	print("HostNetwork: 已广播数据给其他客户端")
+func test_simple_rpc(message: String):
+	print("HostNetwork: ===== 收到测试RPC =====")
+	print("HostNetwork: 消息:", message)
+	print("HostNetwork: 发送者ID:", multiplayer.get_remote_sender_id())
+	print("HostNetwork: ===== 测试RPC完成 =====")
 
-# RPC：广播玩家数据给客户端
-@rpc("authority", "unreliable")
-func sync_player_data(player_id: int, data: Dictionary):
-	print("HostNetwork: 广播玩家数据 - ID:", player_id, " 数据:", data)
+# RPC：接收客户端事件并转发
+@rpc("any_peer", "unreliable")
+func receive_player_event(event_data: Dictionary):
+	print("HostNetwork: ===== 收到RPC调用 =====")
+	print("HostNetwork: 事件数据:", event_data)
+	
+	var player_id = event_data.get("player_id", 0)
+	var event_type = event_data.get("event_type", "unknown")
+	
+	print("HostNetwork: 接收玩家事件 - ID:", player_id, " 类型:", event_type)
+	print("HostNetwork: 当前连接玩家:", connected_players.keys())
+	
+	# 验证玩家是否已连接
+	if not connected_players.has(player_id):
+		print("HostNetwork: 警告 - 未连接的玩家发送事件 - ID:", player_id)
+		print("HostNetwork: 已连接玩家列表:", connected_players.keys())
+		return
+	
+	# 验证事件数据
+	if not validate_event_data(event_data):
+		print("HostNetwork: 事件数据验证失败 - ID:", player_id)
+		return
+	
+	# 转发事件给所有其他客户端
+	print("HostNetwork: 转发事件给其他客户端")
+	rpc("sync_player_event", event_data)
+	print("HostNetwork: ===== RPC处理完成 =====")
+
+# 验证事件数据
+func validate_event_data(event_data: Dictionary) -> bool:
+	# 检查必需字段
+	if not event_data.has("player_id") or not event_data.has("event_type"):
+		return false
+	
+	var event_type = event_data.get("event_type", "")
+	
+	# 根据事件类型验证数据
+	match event_type:
+		"movement":
+			return event_data.has("position") and event_data.has("velocity")
+		"animation":
+			return event_data.has("animation")
+		"state":
+			return event_data.has("state_type") and event_data.has("state_value")
+		"spell":
+			return event_data.has("spell_data")
+		_:
+			print("HostNetwork: 未知事件类型:", event_type)
+			return false
