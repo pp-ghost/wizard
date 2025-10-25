@@ -283,6 +283,14 @@ func _physics_process(delta):
 	
 	# 移动并处理碰撞 - 墙体会自动阻挡玩家
 	move_and_slide()
+	
+	# 网络同步
+	if multiplayer.has_multiplayer_peer() and multiplayer.multiplayer_peer:
+		sync_timer += delta
+		if sync_timer >= sync_interval:
+			sync_timer = 0.0
+			print("Player: 触发网络同步 - 计时器重置")
+			sync_player_data()
 
 # 开始翻滚
 func start_roll():
@@ -294,3 +302,88 @@ func start_roll():
 func set_input_enabled(enabled: bool):
 	input_enabled = enabled
 	print("Player: 输入状态设置为 ", "启用" if enabled else "禁用")
+
+# 网络同步相关
+var sync_timer: float = 0.0
+var sync_interval: float = 1.0 / 20.0  # 20 FPS同步
+var last_sent_data: Dictionary = {}
+
+
+# 同步玩家数据到服务器
+func sync_player_data():
+	print("Player: 尝试同步数据 - 网络状态:", multiplayer.has_multiplayer_peer(), " 对等体:", multiplayer.multiplayer_peer != null)
+	
+	if not multiplayer.has_multiplayer_peer() or not multiplayer.multiplayer_peer:
+		print("Player: 网络未连接，跳过同步")
+		return
+	
+	var player_data = {
+		"position": position,
+		"velocity": velocity,
+		"animation": animated_sprite.animation,
+		"is_rolling": is_rolling,
+		"is_attacking": is_attacking
+	}
+	
+	print("Player: 当前数据:", player_data)
+	print("Player: 上次数据:", last_sent_data)
+	
+	# 检查数据是否有变化
+	if player_data != last_sent_data:
+		print("Player: 数据有变化，发送同步信息")
+		
+		# 发送位置更新
+		if player_data["position"] != last_sent_data.get("position", Vector2.ZERO):
+			print("Player: 发送位置更新:", position)
+			rpc("sync_player_position_client", multiplayer.get_unique_id(), position)
+		
+		# 发送动画更新
+		if player_data["animation"] != last_sent_data.get("animation", ""):
+			print("Player: 发送动画更新:", animated_sprite.animation)
+			rpc("sync_player_animation_client", multiplayer.get_unique_id(), animated_sprite.animation)
+		
+		# 发送完整数据
+		print("Player: 发送完整数据:", player_data)
+		print("Player: 调用RPC - sync_player_data_client, 玩家ID:", multiplayer.get_unique_id())
+		
+		# 先测试连接
+		print("Player: ===== 开始RPC测试 =====")
+		print("Player: 本地ID:", multiplayer.get_unique_id())
+		print("Player: 是否为服务器:", multiplayer.is_server())
+		print("Player: 网络对等体状态:", multiplayer.multiplayer_peer.get_connection_status())
+		print("Player: 尝试调用服务器ID 1...")
+		
+		# 检查网络状态
+		if not multiplayer.has_multiplayer_peer():
+			print("Player: 错误 - 没有多玩家对等体！")
+			return
+		
+		if not multiplayer.multiplayer_peer:
+			print("Player: 错误 - 多玩家对等体为空！")
+			return
+			
+		print("Player: 网络状态正常，发送RPC...")
+		print("Player: 调用 rpc_id(1, 'test_connection')")
+		
+		# 尝试多种RPC调用方式
+		print("Player: 方式1 - rpc_id(1, 'test_connection')")
+		rpc_id(1, "test_connection")
+		
+		print("Player: 方式2 - rpc('test_connection')")
+		rpc("test_connection")
+		
+		print("Player: RPC调用已发送")
+		print("Player: ===== RPC测试完成 =====")
+		
+		# 等待一帧，看看是否有错误
+		await get_tree().process_frame
+		print("Player: RPC调用后检查完成")
+		
+		# 使用rpc_id明确指定目标（1表示服务器）
+		print("Player: 使用rpc_id调用服务器...")
+		rpc_id(1, "sync_player_data_client", multiplayer.get_unique_id(), player_data)
+		print("Player: RPC调用完成")
+		
+		last_sent_data = player_data.duplicate()
+	else:
+		print("Player: 数据无变化，跳过同步")

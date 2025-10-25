@@ -49,9 +49,8 @@ func trigger_portal_interaction():
 	# 播放传送门效果
 	show_portal_effect()
 	
-	# 切换到战斗场景
-	print("Portal: 正在切换到战斗场景...")
-	get_tree().change_scene_to_file("res://scence/fight.tscn")
+	# 显示联机界面
+	show_network_join_ui()
 
 # 显示传送门效果（占位函数）
 func show_portal_effect():
@@ -73,3 +72,19 @@ func hide_interaction_prompt():
 		print("Portal: 隐藏交互提示")
 	else:
 		print("Portal: 警告 - 未找到Label节点")
+
+# 显示联机界面
+func show_network_join_ui():
+	print("Portal: 显示联机界面")
+	
+	# 不暂停游戏，让输入框能正常工作
+	# get_tree().paused = true
+	
+	# 加载联机界面场景
+	var network_ui_scene = preload("res://scence/network_join_ui.tscn")
+	var network_ui_instance = network_ui_scene.instantiate()
+	
+	# 添加到场景树
+	get_tree().current_scene.add_child(network_ui_instance)
+	
+	print("Portal: 联机界面已显示")

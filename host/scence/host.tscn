@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1gx84ufwkqe0"]
+
+[ext_resource type="Script" uid="uid://bc3km3skqjflh" path="res://host/scripts/host.gd" id="1_bmd1u"]
+[ext_resource type="Script" uid="uid://hu7aajvc60tr" path="res://host/scripts/network_manager.gd" id="5_network"]
+[ext_resource type="PackedScene" path="res://host/scence/server_info_ui.tscn" id="6_server_info"]
+
+[node name="host" type="Node"]
+script = ExtResource("1_bmd1u")
+
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("5_network")
+
+[node name="ServerInfoUI" parent="." instance=ExtResource("6_server_info")]
+grow_vertical = 0
