@@ -11,6 +11,7 @@ extends Resource
 @export var damage: int = 20
 @export var speed: float = 200.0
 @export var range: float = 100.0
+@export var trigger_key: int = KEY_1  # 触发按键
 @export var is_unlocked: bool = true
 
 

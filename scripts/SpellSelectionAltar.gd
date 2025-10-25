@@ -58,6 +58,8 @@ func _input(event):
 		var existing_ui = get_tree().current_scene.get_node_or_null("SpellSelectionUI")
 		if existing_ui:
 			print("SpellSelectionAltar: 关闭已打开的法术选择界面")
+			# 确保恢复玩家输入
+			existing_ui.resume_player_input()
 			existing_ui.queue_free()
 		else:
 			print("SpellSelectionAltar: 玩家按下了F键，准备打开法术选择界面")

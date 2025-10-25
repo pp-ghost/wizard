@@ -1,0 +1,174 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq8x70a00a1b4"]
+
+[ext_resource type="Script" uid="uid://bq8x70a00a1b5" path="res://scripts/ui/spell_edit_ui.gd" id="1_edit_script"]
+
+[node name="SpellEditUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 59.0
+offset_top = 159.0
+offset_right = 59.0
+offset_bottom = 159.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_edit_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="MainPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+text = "编辑法术"
+horizontal_alignment = 1
+
+[node name="SpellName" type="Label" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 50.0
+offset_right = 150.0
+offset_bottom = 80.0
+grow_horizontal = 2
+text = "法术名称"
+horizontal_alignment = 1
+
+[node name="Parameters" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 90.0
+offset_right = -313.0
+offset_bottom = -60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DamageContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="DamageLabel" type="Label" parent="MainPanel/Parameters/DamageContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "伤害值:"
+
+[node name="DamageSpinBox" type="SpinBox" parent="MainPanel/Parameters/DamageContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 999.0
+value = 25.0
+
+[node name="SpeedContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="MainPanel/Parameters/SpeedContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "飞行速度:"
+
+[node name="SpeedSpinBox" type="SpinBox" parent="MainPanel/Parameters/SpeedContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 50.0
+max_value = 1000.0
+value = 300.0
+
+[node name="RangeContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="RangeLabel" type="Label" parent="MainPanel/Parameters/RangeContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "最大射程:"
+
+[node name="RangeSpinBox" type="SpinBox" parent="MainPanel/Parameters/RangeContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 50.0
+max_value = 1000.0
+value = 200.0
+
+[node name="CooldownContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="CooldownLabel" type="Label" parent="MainPanel/Parameters/CooldownContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "冷却时间:"
+
+[node name="CooldownSpinBox" type="SpinBox" parent="MainPanel/Parameters/CooldownContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+value = 1.5
+
+[node name="KeyContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="KeyLabel" type="Label" parent="MainPanel/Parameters/KeyContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "触发按键:"
+
+[node name="KeyOptionButton" type="OptionButton" parent="MainPanel/Parameters/KeyContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Buttons" type="HBoxContainer" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -119.0
+offset_top = -134.0
+offset_right = 121.0
+offset_bottom = -94.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SaveButton" type="Button" parent="MainPanel/Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "保存"
+
+[node name="CancelButton" type="Button" parent="MainPanel/Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "取消"

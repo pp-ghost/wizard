@@ -94,7 +94,7 @@ func navigate_down():
 func select_current_spell():
 	if current_selected_index >= 0 and current_selected_index < available_spells.size():
 		var selected_spell = available_spells[current_selected_index]
-		_on_spell_selected(selected_spell)
+		_on_spell_edit(selected_spell)
 
 # 通过索引选择法术
 func select_spell_by_index(index: int):
@@ -107,6 +107,9 @@ func select_spell_by_index(index: int):
 func update_selection_visual():
 	for i in range(spell_list.get_child_count()):
 		var spell_container = spell_list.get_child(i)
+		if not spell_container:
+			continue
+		
 		if i == current_selected_index:
 			# 高亮当前选择
 			spell_container.modulate = Color(1.2, 1.2, 1.0, 1.0)  # 黄色高亮
@@ -116,6 +119,9 @@ func update_selection_visual():
 
 # 加载可用法术
 func load_available_spells():
+	if not game_library:
+		print("SpellSelectionUI: 错误 - game_library 为空，无法加载法术")
+		return
 	available_spells = game_library.get_available_spells()
 	print("SpellSelectionUI: 加载了 ", available_spells.size(), " 个可用法术")
 
@@ -156,19 +162,26 @@ func create_spell_button(spell: SpellData):
 	
 	# 创建法术信息标签
 	var info_label = Label.new()
-	info_label.text = "法力消耗: " + str(spell.mana_cost) + " | 伤害: " + str(spell.damage)
+	info_label.text = "伤害: " + str(spell.damage) + " | 速度: " + str(spell.speed) + " | 射程: " + str(spell.range)
 	info_label.add_theme_font_size_override("font_size", 12)
 	info_label.modulate = Color(0.8, 0.8, 0.8)
 	
+	# 创建按键标签
+	var key_label = Label.new()
+	key_label.text = "按键: " + OS.get_keycode_string(spell.trigger_key)
+	key_label.add_theme_font_size_override("font_size", 12)
+	key_label.modulate = Color(0.6, 0.8, 1.0)  # 蓝色
+	
 	# 创建按钮
 	var button = Button.new()
-	button.text = "装备"
+	button.text = "编辑"
 	button.custom_minimum_size = Vector2(80, 40)
-	button.pressed.connect(_on_spell_selected.bind(spell))
+	button.pressed.connect(_on_spell_edit.bind(spell))
 	
 	# 组装UI
 	text_container.add_child(name_label)
 	text_container.add_child(info_label)
+	text_container.add_child(key_label)
 	
 	spell_container.add_child(icon_texture)
 	spell_container.add_child(text_container)
@@ -179,37 +192,41 @@ func create_spell_button(spell: SpellData):
 	
 	print("SpellSelectionUI: 创建法术按钮 - ", spell.spell_name)
 
-# 法术选择处理
-func _on_spell_selected(spell: SpellData):
-	print("SpellSelectionUI: 玩家选择了法术 - ", spell.spell_name)
+# 法术编辑处理
+func _on_spell_edit(spell: SpellData):
+	print("SpellSelectionUI: 玩家要编辑法术 - ", spell.spell_name)
 	
-	# 尝试装备法术
-	if game_library:
-		var success = game_library.equip_spell(spell)
-		if success:
-			print("SpellSelectionUI: 法术装备成功 - ", spell.spell_name)
-			# 更新按钮状态
-			update_spell_buttons()
-		else:
-			print("SpellSelectionUI: 法术装备失败 - ", spell.spell_name)
+	# 打开法术编辑界面
+	open_spell_edit_ui(spell)
 
 # 更新法术按钮状态
 func update_spell_buttons():
-	var equipped_spells = game_library.get_equipped_spells()
+	# 安全检查
+	if not game_library:
+		print("SpellSelectionUI: 错误 - game_library 为空，无法更新按钮状态")
+		return
 	
 	for i in range(spell_list.get_child_count()):
 		var spell_container = spell_list.get_child(i)
-		var button = spell_container.get_child(2)  # 按钮是第3个子节点
-		var spell = available_spells[i]
+		if not spell_container:
+			print("SpellSelectionUI: 警告 - 法术容器为空，索引: ", i)
+			continue
 		
-		if spell in equipped_spells:
-			button.text = "已装备"
-			button.disabled = true
-			button.modulate = Color(0.5, 0.5, 0.5)  # 灰色表示已装备
-		else:
-			button.text = "装备"
-			button.disabled = false
-			button.modulate = Color.WHITE
+		# 安全获取按钮（最后一个子节点）
+		var button = spell_container.get_child(spell_container.get_child_count() - 1)
+		if not button:
+			print("SpellSelectionUI: 警告 - 按钮为空，索引: ", i)
+			continue
+		
+		var spell = available_spells[i]
+		if not spell:
+			print("SpellSelectionUI: 警告 - 法术数据为空，索引: ", i)
+			continue
+		
+		# 所有法术都可以编辑
+		button.text = "编辑"
+		button.disabled = false
+		button.modulate = Color.WHITE
 	
 	# 更新选择视觉效果
 	update_selection_visual()
@@ -226,8 +243,20 @@ func show_ui():
 	visible = true
 	# 暂停玩家输入
 	pause_player_input()
-	update_spell_buttons()
+	# 等待初始化完成后再更新按钮
+	if game_library:
+		update_spell_buttons()
+	else:
+		# 如果还没初始化完成，等待下一帧
+		call_deferred("_deferred_update_buttons")
 	show_instructions()
+
+# 延迟更新按钮
+func _deferred_update_buttons():
+	if game_library:
+		update_spell_buttons()
+	else:
+		print("SpellSelectionUI: 警告 - 法术库未初始化，无法更新按钮")
 
 # 隐藏UI
 func hide_ui():
@@ -236,22 +265,33 @@ func hide_ui():
 # 暂停玩家输入
 func pause_player_input():
 	var player = get_tree().current_scene.get_node_or_null("player")
-	if player and player.has_method("set_input_enabled"):
+	if not player:
+		print("SpellSelectionUI: 警告 - 未找到玩家节点")
+		return
+	
+	# 使用 set_input_enabled 方法
+	if player.has_method("set_input_enabled"):
 		player.set_input_enabled(false)
-		print("SpellSelectionUI: 已暂停玩家输入")
-	elif player:
-		# 如果玩家没有set_input_enabled方法，设置一个标志
-		player.set_meta("input_paused", true)
-		print("SpellSelectionUI: 已设置玩家输入暂停标志")
+		print("SpellSelectionUI: 已暂停玩家输入 (set_input_enabled)")
+	
+	# 同时设置 meta 标志作为备份
+	player.set_meta("input_paused", true)
+	print("SpellSelectionUI: 已设置玩家输入暂停标志")
 
 # 恢复玩家输入
 func resume_player_input():
 	var player = get_tree().current_scene.get_node_or_null("player")
-	if player and player.has_method("set_input_enabled"):
+	if not player:
+		print("SpellSelectionUI: 警告 - 未找到玩家节点")
+		return
+	
+	# 使用 set_input_enabled 方法
+	if player.has_method("set_input_enabled"):
 		player.set_input_enabled(true)
-		print("SpellSelectionUI: 已恢复玩家输入")
-	elif player:
-		# 移除输入暂停标志
+		print("SpellSelectionUI: 已恢复玩家输入 (set_input_enabled)")
+	
+	# 同时清除 meta 标志（确保完全恢复）
+	if player.has_meta("input_paused"):
 		player.remove_meta("input_paused")
 		print("SpellSelectionUI: 已移除玩家输入暂停标志")
 
@@ -259,7 +299,28 @@ func resume_player_input():
 func show_instructions():
 	print("=== 法术选择界面操作说明 ===")
 	print("↑↓ 方向键: 选择法术")
-	print("Enter/E键: 装备选中的法术")
+	print("Enter/E键: 编辑选中的法术")
 	print("1-9数字键: 快速选择法术")
 	print("ESC键: 关闭界面")
+	print("按对应按键施放法术")
 	print("================================")
+
+# 打开法术编辑界面
+func open_spell_edit_ui(spell: SpellData):
+	print("SpellSelectionUI: 打开法术编辑界面 - ", spell.spell_name)
+	
+	# 创建法术编辑UI
+	var edit_ui = preload("res://scence/spell_edit_ui.tscn").instantiate()
+	edit_ui.name = "SpellEditUI"
+	
+	# 设置要编辑的法术
+	edit_ui.set_spell_to_edit(spell)
+	
+	# 添加到场景
+	get_tree().current_scene.add_child(edit_ui)
+	
+	# 显示编辑UI
+	edit_ui.show_ui()
+	
+	# 关闭当前UI
+	_on_close_pressed()

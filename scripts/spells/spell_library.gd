@@ -26,6 +26,7 @@ func create_fire_ball():
 	fire_ball.damage = 25
 	fire_ball.speed = 300.0
 	fire_ball.range = 200.0
+	fire_ball.trigger_key = KEY_Q  # 按Q键触发
 	fire_ball.is_unlocked = true
 	
 	all_spells.append(fire_ball)
@@ -41,6 +42,7 @@ func create_ice_shard():
 	ice_shard.damage = 20
 	ice_shard.speed = 250.0
 	ice_shard.range = 150.0
+	ice_shard.trigger_key = KEY_E  # 按E键触发
 	ice_shard.is_unlocked = true
 	
 	all_spells.append(ice_shard)

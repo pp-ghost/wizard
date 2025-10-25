@@ -125,7 +125,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"fly_left",
-"speed": 8.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -139,7 +139,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"fly_right",
-"speed": 8.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -156,7 +156,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"hit_left",
-"speed": 8.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -173,7 +173,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"hit_right",
-"speed": 8.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -193,7 +193,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"spawn_left",
-"speed": 8.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -216,7 +216,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"spawn_right",
-"speed": 8.0
+"speed": 12.0
 }]
 
 [node name="FireballProjectile" type="Area2D"]
@@ -237,5 +237,5 @@ shape = SubResource("CapsuleShape2D_f1g4s")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-9, -19)
 sprite_frames = SubResource("SpriteFrames_3eahu")
-animation = &"fly_left"
+animation = &"spawn_right"
 metadata/_edit_lock_ = true

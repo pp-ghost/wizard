@@ -23,7 +23,7 @@ var roll_cooldown_duration: float = 2.0  # 翻滚冷却时间
 var input_enabled: bool = true
 
 # 施法相关
-var current_spell: SpellData = null  # 当前选中的法术
+var available_spells: Array[SpellData] = []  # 可用法术列表
 
 func _ready():
 	# 设置玩家初始位置为 (150, 150)
@@ -45,13 +45,14 @@ func _initialize_spell_system():
 	if not spell_caster:
 		spell_caster = get_node_or_null("SpellCaster")
 	
-	# 设置默认法术（火球术）
+	# 加载可用法术并自动解锁
 	if game_library:
-		current_spell = game_library.get_spell_library().get_spell_by_id("fire_ball")
-		if current_spell:
-			print("Player: 默认法术设置为 ", current_spell.spell_name)
-		else:
-			print("Player: 警告 - 未找到火球法术")
+		available_spells = game_library.get_available_spells()
+		print("Player: 加载了 ", available_spells.size(), " 个可用法术")
+		for spell in available_spells:
+			# 自动解锁所有法术
+			spell.is_unlocked = true
+			print("Player: 法术 - ", spell.spell_name, " 按键: ", OS.get_keycode_string(spell.trigger_key), " (已解锁)")
 	else:
 		print("Player: 警告 - 未找到法术库")
 	
@@ -66,14 +67,21 @@ func _input(event):
 	if not input_enabled or has_meta("input_paused"):
 		return
 	
-	# 鼠标左键施法
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			cast_spell_to_mouse()
+	# 按键施法
+	if event is InputEventKey and event.pressed:
+		var spell = game_library.get_spell_by_key(event.keycode)
+		if spell:
+			cast_spell_to_mouse(spell)
+	
+	# 鼠标按键施法
+	if event is InputEventMouseButton and event.pressed:
+		var spell = game_library.get_spell_by_key(event.button_index)
+		if spell:
+			cast_spell_to_mouse(spell)
 
 # 向鼠标位置施法
-func cast_spell_to_mouse():
-	if not current_spell or not spell_caster:
+func cast_spell_to_mouse(spell: SpellData):
+	if not spell or not spell_caster:
 		print("Player: 无法施法 - 缺少法术或施法器")
 		return
 	
@@ -94,8 +102,8 @@ func cast_spell_to_mouse():
 	var spell_direction = direction_vector.normalized()
 	
 	# 施法
-	print("Player: 施放 ", current_spell.spell_name)
-	var projectile = spell_caster.cast_spell(current_spell, global_position, spell_direction)
+	print("Player: 施放 ", spell.spell_name)
+	var projectile = spell_caster.cast_spell(spell, global_position, spell_direction)
 	
 	if projectile:
 		print("Player: 法术施放成功")
