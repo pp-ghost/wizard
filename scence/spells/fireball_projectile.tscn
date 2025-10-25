@@ -1,8 +1,10 @@
-[gd_scene load_steps=32 format=3 uid="uid://bq8x70a00a1b3"]
+[gd_scene load_steps=34 format=3 uid="uid://bq8x70a00a1b3"]
 
 [ext_resource type="Script" uid="uid://c4ww6j85yi6qt" path="res://scripts/spells/spell_projectile.gd" id="1_projectile_script"]
 [ext_resource type="Texture2D" uid="uid://di4qa6pbuqv1r" path="res://asset/magic/fire_ball_effect1.png" id="2_f1g4s"]
 [ext_resource type="Texture2D" uid="uid://cbrtwg4raekda" path="res://asset/magic/fire_ball_effect.png" id="2_t3n7v"]
+[ext_resource type="AudioStream" uid="uid://dfuh0b45u3dvx" path="res://audio/fly/fireball_fly.ogg" id="4_gk181"]
+[ext_resource type="AudioStream" uid="uid://ng8qpwwlo86q" path="res://audio/fly/fireball_explode.ogg" id="5_xidtr"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_t3n7v"]
 radius = 6.666506
@@ -237,3 +239,9 @@ shape = SubResource("CapsuleShape2D_f1g4s")
 position = Vector2(-9, -19)
 sprite_frames = SubResource("SpriteFrames_3eahu")
 animation = &"hit_right"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_gk181")
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_xidtr")
