@@ -1,8 +1,8 @@
-class_name GameSpellLibrary
+class_name SpellLibraryManager
 extends Node
 
 # 单例模式
-static var instance: GameSpellLibrary
+static var instance: SpellLibraryManager
 
 # 法术库
 var spell_library: SpellLibrary

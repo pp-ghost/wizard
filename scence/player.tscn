@@ -216,8 +216,6 @@ shape = SubResource("RectangleShape2D_uwcw8")
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("3_3j5vv")
 
-[node name="GameSpellLibrary" type="Node" parent="."]
-script = ExtResource("4_qav0y")
 
 [node name="SpellCaster" type="Node" parent="."]
 script = ExtResource("5_spell_caster")

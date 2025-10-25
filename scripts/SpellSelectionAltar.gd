@@ -26,7 +26,7 @@ func connect_to_spell_library():
 	call_deferred("_deferred_connect_to_spell_library")
 
 func _deferred_connect_to_spell_library():
-	var game_library = GameSpellLibrary.instance
+	var game_library = GameSpellLibrary
 	if game_library:
 		# 连接法术装备信号
 		game_library.spell_equipped.connect(_on_spell_equipped)
@@ -40,7 +40,7 @@ func _deferred_connect_to_spell_library():
 
 # 断开法术库信号连接
 func disconnect_from_spell_library():
-	var game_library = GameSpellLibrary.instance
+	var game_library = GameSpellLibrary
 	if game_library:
 		game_library.spell_equipped.disconnect(_on_spell_equipped)
 		game_library.spell_unequipped.disconnect(_on_spell_unequipped)
@@ -137,18 +137,6 @@ func open_spell_selection():
 		print("SpellSelectionAltar: 错误 - 未找到全局法术库")
 
 # 安全获取法术库的辅助函数
-func _get_spell_library() -> GameSpellLibrary:
-	# 首先尝试从静态实例获取
-	if GameSpellLibrary.instance:
-		return GameSpellLibrary.instance
-	
-	# 如果静态实例还没初始化，尝试从玩家节点查找
-	var player = get_tree().current_scene.get_node_or_null("player")
-	if player:
-		var library = player.get_node_or_null("GameSpellLibrary")
-		if library:
-			print("SpellSelectionAltar: 从玩家节点找到法术库")
-			return library
-	
-	print("SpellSelectionAltar: 警告 - 无法找到法术库")
-	return null
+func _get_spell_library() -> SpellLibraryManager:
+	# 直接使用全局单例
+	return GameSpellLibrary

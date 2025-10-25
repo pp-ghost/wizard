@@ -10,7 +10,8 @@ extends CharacterBody2D
 
 # 法术系统节点引用
 @onready var spell_caster: SpellCaster = $SpellCaster
-@onready var game_library: GameSpellLibrary = $GameSpellLibrary
+# 使用全局单例，不需要 @onready
+var game_library: SpellLibraryManager = GameSpellLibrary
 
 # 翻滚状态
 var is_rolling: bool = false
@@ -43,7 +44,7 @@ func _initialize_spell_system():
 	
 	# 获取法术库
 	if not game_library:
-		game_library = get_node_or_null("GameSpellLibrary")
+		game_library = GameSpellLibrary
 	
 	if not spell_caster:
 		spell_caster = get_node_or_null("SpellCaster")
@@ -74,6 +75,11 @@ func _input(event):
 	if event is InputEventKey and event.pressed:
 		var spell = game_library.get_spell_by_key(event.keycode)
 		if spell:
+			# 检查是否在翻滚期间
+			if is_rolling:
+				print("Player: 翻滚期间无法施法 - ", spell.spell_name)
+				return
+			
 			# 只有在法术可用时才记录按键状态和施法
 			if can_cast_spell(spell):
 				spell_input_states[spell.spell_id] = true
@@ -93,6 +99,11 @@ func _input(event):
 	if event is InputEventMouseButton and event.pressed:
 		var spell = game_library.get_spell_by_key(event.button_index)
 		if spell:
+			# 检查是否在翻滚期间
+			if is_rolling:
+				print("Player: 翻滚期间无法施法 - ", spell.spell_name)
+				return
+			
 			# 只有在法术可用时才记录按键状态和施法
 			if can_cast_spell(spell):
 				spell_input_states[spell.spell_id] = true

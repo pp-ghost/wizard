@@ -1,14 +1,16 @@
-[gd_scene load_steps=37 format=4 uid="uid://cjhuu5etmbh0h"]
+[gd_scene load_steps=40 format=4 uid="uid://cjhuu5etmbh0h"]
 
-[ext_resource type="Texture2D" uid="uid://c8b3wsj0rhcf3" path="res://asset/Dungeon_Tileset.png" id="1_bgoec"]
+[ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_bgoec"]
 [ext_resource type="Texture2D" uid="uid://ccj2xaidskcmr" path="res://asset/Dungeon assets pack/Dungeon assets pack/Map/Decorations_tileset.png" id="2_b2esl"]
 [ext_resource type="Texture2D" uid="uid://cg155lw6lqs0v" path="res://asset/Dungeon assets pack/Dungeon assets pack/Map/Map_tileset.png" id="3_cifbe"]
 [ext_resource type="Texture2D" uid="uid://blosohx2fxi8e" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Tilesets/Dungeon_Tiles.png" id="4_41mfw"]
 [ext_resource type="Texture2D" uid="uid://bdnum2180jscs" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Tilesets/Floors_Tiles.png" id="5_1mpip"]
 [ext_resource type="Texture2D" uid="uid://daeq2r66dmg1m" path="res://asset/Torch Animated.png" id="6_65who"]
-[ext_resource type="Texture2D" uid="uid://bl7ax04judbfr" path="res://asset/side_torch.png" id="7_gxewf"]
+[ext_resource type="Texture2D" uid="uid://bl7ax04judbfr" path="res://asset/decorate/side_torch.png" id="7_gxewf"]
 [ext_resource type="Texture2D" uid="uid://ch1sbb8skynv7" path="res://asset/Dungeon assets pack/Dungeon assets pack/Map/Torch.png" id="8_1hlis"]
 [ext_resource type="Texture2D" uid="uid://vsk03mcvsnf5" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Tilesets/Wall_Tiles.png" id="9_qm2q7"]
+[ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="10_b2esl"]
+[ext_resource type="Script" uid="uid://bkvjpepf74320" path="res://scripts/portal_back.gd" id="11_portal_back"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k1kwf"]
 texture = ExtResource("1_bgoec")
@@ -405,7 +407,10 @@ sources/1 = SubResource("TileSetAtlasSource_4obfb")
 sources/2 = SubResource("TileSetAtlasSource_qx10m")
 sources/3 = SubResource("TileSetAtlasSource_ot18a")
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_b2esl"]
+radius = 16.0
+
+[node name="fight" type="Node2D"]
 
 [node name="walle" type="TileMapLayer" parent="."]
 visible = false
@@ -427,3 +432,21 @@ tile_set = SubResource("TileSet_suv6g")
 [node name="decorateon" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAWABkAAAAAAAAAAAAaABkAAAAAAAAAAAAaABYAAAAAAAAAAAAWABYAAAAAAAAAAAAYABgAAwAEAAgAAAA=")
 tile_set = SubResource("TileSet_gx880")
+
+[node name="player" parent="." instance=ExtResource("10_b2esl")]
+position = Vector2(93, 555)
+
+[node name="portal_back" type="Area2D" parent="."]
+script = ExtResource("11_portal_back")
+
+[node name="Label" type="Label" parent="portal_back"]
+offset_left = 294.0
+offset_top = 688.0
+offset_right = 334.0
+offset_bottom = 737.0
+text = "F
+"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="portal_back"]
+position = Vector2(296, 728)
+shape = SubResource("CircleShape2D_b2esl")

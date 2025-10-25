@@ -5,7 +5,7 @@ extends Control
 @onready var close_button: Button = $MainPanel/CloseButton
 
 # 法术库引用
-var game_library: GameSpellLibrary
+var game_library: SpellLibraryManager
 var available_spells: Array[SpellData] = []
 
 # 输入处理
@@ -30,21 +30,9 @@ func _deferred_initialize():
 		print("SpellSelectionUI: 错误 - 未找到法术库")
 
 # 安全获取法术库的辅助函数
-func _get_spell_library() -> GameSpellLibrary:
-	# 首先尝试从静态实例获取
-	if GameSpellLibrary.instance:
-		return GameSpellLibrary.instance
-	
-	# 如果静态实例还没初始化，尝试从玩家节点查找
-	var player = get_tree().current_scene.get_node_or_null("player")
-	if player:
-		var library = player.get_node_or_null("GameSpellLibrary")
-		if library:
-			print("SpellSelectionUI: 从玩家节点找到法术库")
-			return library
-	
-	print("SpellSelectionUI: 警告 - 无法找到法术库")
-	return null
+func _get_spell_library() -> SpellLibraryManager:
+	# 直接使用全局单例
+	return GameSpellLibrary
 
 # 初始化输入处理
 func initialize_input_handling():
