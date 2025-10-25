@@ -41,7 +41,10 @@ func _ready():
 	if debug_show_collision:
 		enable_collision_debug()
 	
+	# 调试音频节点
 	print("SpellProjectile: 投射物已创建，方向: ", direction)
+	print("SpellProjectile: fly_audio节点存在:", fly_audio != null)
+	print("SpellProjectile: explode_audio节点存在:", explode_audio != null)
 
 func _physics_process(delta):
 	if is_hitting:
@@ -103,8 +106,38 @@ func setup_projectile(spell_data: SpellData, start_pos: Vector2, target_directio
 	print("SpellProjectile: 设置后的位置: ", position)
 	print("SpellProjectile: 设置后的旋转角度: ", rad_to_deg(rotation), "度")
 	
+	# 延迟播放飞行音效，确保节点完全初始化
+	if current_spell_id == "fire_ball":
+		print("SpellProjectile: 准备播放火球飞行音效")
+		call_deferred("_play_fly_sound")
+	elif current_spell_id == "ice_shard":
+		print("SpellProjectile: 准备播放冰锥飞行音效")
+		call_deferred("_play_ice_fly_sound")
+	
 	# 播放生成动画
 	play_spawn_animation()
+
+# 播放飞行音效的延迟函数
+func _play_fly_sound():
+	print("SpellProjectile: 尝试播放火球飞行音效")
+	print("SpellProjectile: fly_audio节点存在:", fly_audio != null)
+	if fly_audio:
+		fly_audio.volume_db = 5.0  # 设置音量为5dB（比最大音量更响）
+		fly_audio.play()
+		print("SpellProjectile: 播放火球飞行音效成功")
+	else:
+		print("SpellProjectile: 错误 - fly_audio节点不存在")
+
+# 播放冰锥飞行音效的延迟函数
+func _play_ice_fly_sound():
+	print("SpellProjectile: 尝试播放冰锥飞行音效")
+	print("SpellProjectile: fly_audio节点存在:", fly_audio != null)
+	if fly_audio:
+		fly_audio.volume_db = 0.0  # 设置音量为0dB（标准音量）
+		fly_audio.play()
+		print("SpellProjectile: 播放冰锥飞行音效成功")
+	else:
+		print("SpellProjectile: 错误 - fly_audio节点不存在")
 
 # 碰撞处理
 func _on_body_entered(body: Node2D):
@@ -204,12 +237,6 @@ func play_fly_animation():
 		var anim_name = "fly_left" if is_flying_left else "fly_right"
 		sprite.play(anim_name)
 		print("SpellProjectile: 开始播放", anim_name, "动画")
-		
-		# 播放飞行音效（仅对火球术）
-		if current_spell_id == "fire_ball" and fly_audio:
-			fly_audio.volume_db = 5.0  # 设置音量为5dB（比最大音量更响）
-			fly_audio.play()
-			print("SpellProjectile: 播放火球飞行音效")
 	else:
 		print("SpellProjectile: 错误 - 未找到AnimatedSprite2D节点")
 
@@ -221,10 +248,13 @@ func play_hit_animation():
 		sprite.play(anim_name)
 		print("SpellProjectile: 播放", anim_name, "动画")
 		
-		# 播放爆炸音效（仅对火球术）
+		# 播放爆炸音效
 		if current_spell_id == "fire_ball" and explode_audio:
 			explode_audio.play()
 			print("SpellProjectile: 播放火球爆炸音效")
+		elif current_spell_id == "ice_shard" and explode_audio:
+			explode_audio.play()
+			print("SpellProjectile: 播放冰锥爆炸音效")
 		
 		# 停止移动和所有物理处理
 		is_hitting = true
