@@ -21,6 +21,8 @@ var current_spell_id: String = ""  # 当前法术ID
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var collision_right: CollisionShape2D = $CollisionShape_right
 @onready var collision_left: CollisionShape2D = $CollisionShape_left
+@onready var fly_audio: AudioStreamPlayer = $AudioStreamPlayer
+@onready var explode_audio: AudioStreamPlayer = $AudioStreamPlayer2
 
 # 信号
 signal projectile_hit(target: Node2D, damage: int)
@@ -202,6 +204,12 @@ func play_fly_animation():
 		var anim_name = "fly_left" if is_flying_left else "fly_right"
 		sprite.play(anim_name)
 		print("SpellProjectile: 开始播放", anim_name, "动画")
+		
+		# 播放飞行音效（仅对火球术）
+		if current_spell_id == "fire_ball" and fly_audio:
+			fly_audio.volume_db = 5.0  # 设置音量为5dB（比最大音量更响）
+			fly_audio.play()
+			print("SpellProjectile: 播放火球飞行音效")
 	else:
 		print("SpellProjectile: 错误 - 未找到AnimatedSprite2D节点")
 
@@ -212,6 +220,12 @@ func play_hit_animation():
 		var anim_name = "hit_left" if is_flying_left else "hit_right"
 		sprite.play(anim_name)
 		print("SpellProjectile: 播放", anim_name, "动画")
+		
+		# 播放爆炸音效（仅对火球术）
+		if current_spell_id == "fire_ball" and explode_audio:
+			explode_audio.play()
+			print("SpellProjectile: 播放火球爆炸音效")
+		
 		# 停止移动和所有物理处理
 		is_hitting = true
 		# 不隐藏投射物，让hit动画完整播放

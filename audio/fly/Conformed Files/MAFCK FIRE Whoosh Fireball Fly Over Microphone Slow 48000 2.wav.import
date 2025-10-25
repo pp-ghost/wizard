@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dfxvoe3tw1sy6"
+path="res://.godot/imported/MAFCK FIRE Whoosh Fireball Fly Over Microphone Slow 48000 2.wav-f56f05df71c9c5ef5af2155d18107ef2.sample"
+
+[deps]
+
+source_file="res://audio/fly/Conformed Files/MAFCK FIRE Whoosh Fireball Fly Over Microphone Slow 48000 2.wav"
+dest_files=["res://.godot/imported/MAFCK FIRE Whoosh Fireball Fly Over Microphone Slow 48000 2.wav-f56f05df71c9c5ef5af2155d18107ef2.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
