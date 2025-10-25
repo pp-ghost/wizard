@@ -1,26 +1,20 @@
-[gd_scene load_steps=55 format=4 uid="uid://dfsij536tx622"]
+[gd_scene load_steps=46 format=4 uid="uid://dfsij536tx622"]
 
 [ext_resource type="Texture2D" uid="uid://due2ll10x67vy" path="res://asset/Dungeon_Tileset.png" id="1_pqeb8"]
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="2_n64i8"]
 [ext_resource type="Texture2D" uid="uid://yubf1k5etgv4" path="res://asset/trees/Size_05.png" id="3_3fxgh"]
 [ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="3_fhu00"]
 [ext_resource type="Texture2D" uid="uid://dhkxixb0bngk2" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Structures/Buildings/Walls.png" id="4_cu4rg"]
-[ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="4_gy1ph"]
-[ext_resource type="Script" uid="uid://xyfgng1bdyba" path="res://scripts/SpellSelectionAltar.gd" id="5_n64i8"]
 [ext_resource type="Texture2D" uid="uid://dcqh48j8fsm27" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Structures/Buildings/Shadows.png" id="5_sxnar"]
-[ext_resource type="Script" uid="uid://biwrjop0fu38c" path="res://scripts/spells/game_spell_library.gd" id="6_fhu00"]
 [ext_resource type="Texture2D" uid="uid://dsb60el7cg36l" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Structures/Buildings/Roofs.png" id="6_nkai8"]
 [ext_resource type="Texture2D" uid="uid://dth5edirau0el" path="res://asset/Pixel Crawler - Free Pack 2.0.4/Pixel Crawler - Free Pack/Environment/Structures/Buildings/Props.png" id="7_selur"]
-[ext_resource type="Script" uid="uid://bw5d1bsq7smpc" path="res://scripts/player_spell_test.gd" id="7_test_script"]
 [ext_resource type="Texture2D" uid="uid://bntlk0376pva5" path="res://asset/decorate/arrow.png" id="9_cxhj0"]
 [ext_resource type="Texture2D" uid="uid://bl7ax04judbfr" path="res://asset/decorate/side_torch.png" id="10_ns7c0"]
 [ext_resource type="Texture2D" uid="uid://btjx8njgu8jl3" path="res://asset/decorate/side_torch2.png" id="11_3fxgh"]
 [ext_resource type="PackedScene" uid="uid://dxs7ucqvhcqeq" path="res://scence/something/skull.tscn" id="11_ns7c0"]
 [ext_resource type="Texture2D" uid="uid://cyj3286jkqlha" path="res://asset/decorate/flag.png" id="12_toh8k"]
 [ext_resource type="Texture2D" uid="uid://brxt08lv8lvpt" path="res://asset/trees/Size_04.png" id="14_toh8k"]
-[ext_resource type="Script" uid="uid://d4g6rsfb4h1g6" path="res://scripts/portal.gd" id="15_t4j40"]
 [ext_resource type="Texture2D" uid="uid://ba52y0ubs5n0m" path="res://asset/trees/Size_03.png" id="15_toh8k"]
-[ext_resource type="PackedScene" uid="uid://bcj2jd86fkff4" path="res://scence/house.tscn" id="21_d44h6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hf1b"]
 texture = ExtResource("1_pqeb8")
@@ -5876,21 +5870,7 @@ sources/0 = SubResource("TileSetAtlasSource_gmb2j")
 sources/1 = SubResource("TileSetAtlasSource_jbmtg")
 sources/2 = SubResource("TileSetAtlasSource_8hwnt")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_toh8k"]
-size = Vector2(30, 28.5)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pqeb8"]
-size = Vector2(26, 27)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_fhu00"]
-animations = [{
-"frames": [],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}]
-
-[node name="prepareroom" type="Node2D"]
+[node name="forest" type="Node2D"]
 
 [node name="wallE" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAALAAQAAAAKAAUAAAA=")
@@ -5914,15 +5894,6 @@ tile_set = SubResource("TileSet_q36u1")
 
 [node name="player" parent="." instance=ExtResource("3_fhu00")]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-script = ExtResource("4_gy1ph")
-
-[node name="GameSpellLibrary" type="Node" parent="."]
-script = ExtResource("6_fhu00")
-
-[node name="PlayerSpellTest" type="Node" parent="."]
-script = ExtResource("7_test_script")
-
 [node name="skull" parent="." instance=ExtResource("11_ns7c0")]
 position = Vector2(184, 68)
 autoplay = "default"
@@ -5938,39 +5909,3 @@ tile_set = SubResource("TileSet_fmkco")
 [node name="roofout" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAIAAIAAgAAAAYAAAAIAAMAAgAAAAcAAAAJAAIAAgABAAYAAAAJAAMAAgABAAcAAAAIAAEAAgAAAAQAAAAJAAEAAgABAAQAAAA=")
 tile_set = SubResource("TileSet_h4xp6")
-
-[node name="portal" type="Area2D" parent="."]
-script = ExtResource("15_t4j40")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="portal"]
-position = Vector2(184, 170)
-shape = SubResource("RectangleShape2D_toh8k")
-
-[node name="Label" type="Label" parent="portal"]
-offset_left = 180.0
-offset_top = 131.0
-offset_right = 220.0
-offset_bottom = 154.0
-text = "F"
-
-[node name="SpellSelectionAltar" type="Area2D" parent="."]
-position = Vector2(183, 67)
-script = ExtResource("5_n64i8")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpellSelectionAltar"]
-position = Vector2(1, 0.5)
-shape = SubResource("RectangleShape2D_pqeb8")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="SpellSelectionAltar"]
-sprite_frames = SubResource("SpriteFrames_fhu00")
-animation = &"idle"
-
-[node name="Label" type="Label" parent="SpellSelectionAltar"]
-offset_left = -4.0
-offset_top = -32.0
-offset_right = 36.0
-offset_bottom = -9.0
-text = "F"
-
-[node name="Node2D" parent="." instance=ExtResource("21_d44h6")]
-position = Vector2(511, 116)

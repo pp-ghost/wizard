@@ -16,14 +16,35 @@ func _ready():
 	# 连接按钮信号
 	close_button.pressed.connect(_on_close_pressed)
 	
-	# 获取法术库
-	game_library = GameSpellLibrary.instance
+	# 延迟初始化，确保法术库已加载
+	call_deferred("_deferred_initialize")
+
+func _deferred_initialize():
+	# 获取法术库 - 安全访问
+	game_library = _get_spell_library()
 	if game_library:
 		load_available_spells()
 		create_spell_buttons()
 		initialize_input_handling()
 	else:
 		print("SpellSelectionUI: 错误 - 未找到法术库")
+
+# 安全获取法术库的辅助函数
+func _get_spell_library() -> GameSpellLibrary:
+	# 首先尝试从静态实例获取
+	if GameSpellLibrary.instance:
+		return GameSpellLibrary.instance
+	
+	# 如果静态实例还没初始化，尝试从玩家节点查找
+	var player = get_tree().current_scene.get_node_or_null("player")
+	if player:
+		var library = player.get_node_or_null("GameSpellLibrary")
+		if library:
+			print("SpellSelectionUI: 从玩家节点找到法术库")
+			return library
+	
+	print("SpellSelectionUI: 警告 - 无法找到法术库")
+	return null
 
 # 初始化输入处理
 func initialize_input_handling():

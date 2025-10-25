@@ -7,7 +7,6 @@ extends Resource
 @export var spell_icon: Texture2D
 
 # 法术属性
-@export var mana_cost: int = 10
 @export var cooldown_time: float = 1.0
 @export var damage: int = 20
 @export var speed: float = 200.0
@@ -21,13 +20,12 @@ func _init():
 	pass
 
 # 检查是否可以施放
-func can_cast(current_mana: int) -> bool:
-	return current_mana >= mana_cost and is_unlocked
+func can_cast() -> bool:
+	return is_unlocked
 
 # 获取法术信息字符串
 func get_info_string() -> String:
 	var info = "名称: " + spell_name + "\n"
-	info += "法力消耗: " + str(mana_cost) + "\n"
 	info += "冷却时间: " + str(cooldown_time) + "秒\n"
 	info += "伤害: " + str(damage) + "\n"
 	info += "速度: " + str(speed) + "\n"

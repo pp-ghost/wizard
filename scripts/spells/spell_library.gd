@@ -22,7 +22,6 @@ func create_fire_ball():
 	fire_ball.spell_id = "fire_ball"
 	fire_ball.spell_name = "火球术"
 	fire_ball.spell_icon = load("res://asset/magic/fire_ball_icon.png")
-	fire_ball.mana_cost = 15
 	fire_ball.cooldown_time = 1.5
 	fire_ball.damage = 25
 	fire_ball.speed = 300.0
@@ -38,7 +37,6 @@ func create_ice_shard():
 	ice_shard.spell_id = "ice_shard"
 	ice_shard.spell_name = "冰锥术"
 	ice_shard.spell_icon = load("res://asset/magic/ice_icon.png")
-	ice_shard.mana_cost = 12
 	ice_shard.cooldown_time = 1.2
 	ice_shard.damage = 20
 	ice_shard.speed = 250.0

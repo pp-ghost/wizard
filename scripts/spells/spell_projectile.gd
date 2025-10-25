@@ -18,7 +18,8 @@ var is_flying_left: bool = false  # 是否向左飞行
 
 # 节点引用
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var collision_right: CollisionShape2D = $CollisionShape_right
+@onready var collision_left: CollisionShape2D = $CollisionShape_left
 
 # 信号
 signal projectile_hit(target: Node2D, damage: int)
@@ -200,7 +201,7 @@ func play_hit_animation():
 	else:
 		print("SpellProjectile: 错误 - 未找到AnimatedSprite2D节点")
 
-# 更新旋转角度
+# 更新旋转角度和碰撞箱
 func update_rotation():
 	# 根据方向向量计算旋转角度
 	var angle = direction.angle()
@@ -211,20 +212,21 @@ func update_rotation():
 	else:
 		rotation = angle  # 向右飞时直接使用角度
 	
-	var collision = get_node_or_null("CollisionShape2D")
-	
-	if collision:
-		# 根据飞行方向调整碰撞箱位置
-		if is_flying_left:
-			# 向左飞行时，调整碰撞箱位置和缩放
-			collision.scale.y = -1.5
-			collision.position = Vector2(5 - 28, 1)  # 向左偏移28像素
-			print("SpellProjectile: 向左飞行 - 碰撞箱向左偏移28像素，旋转角度: ", rad_to_deg(rotation), "度")
-		else:
-			# 向右飞行时，使用默认碰撞箱位置
-			collision.scale.y = 1.5
-			collision.position = Vector2(5, 1)
-			print("SpellProjectile: 向右飞行 - 碰撞箱正常，旋转角度: ", rad_to_deg(rotation), "度")
+	# 根据飞行方向启用对应的碰撞箱
+	if is_flying_left:
+		# 向左飞行 - 启用左碰撞箱，禁用右碰撞箱
+		if collision_left:
+			collision_left.disabled = false
+		if collision_right:
+			collision_right.disabled = true
+		print("SpellProjectile: 向左飞行 - 使用左碰撞箱，旋转角度: ", rad_to_deg(rotation), "度")
+	else:
+		# 向右飞行 - 启用右碰撞箱，禁用左碰撞箱
+		if collision_right:
+			collision_right.disabled = false
+		if collision_left:
+			collision_left.disabled = true
+		print("SpellProjectile: 向右飞行 - 使用右碰撞箱，旋转角度: ", rad_to_deg(rotation), "度")
 	
 	print("SpellProjectile: 碰撞箱和旋转设置完成")
 
@@ -239,8 +241,9 @@ func _draw():
 	if not debug_show_collision:
 		return
 	
-	var collision = get_node_or_null("CollisionShape2D")
-	if not collision or not collision.shape:
+	# 选择当前激活的碰撞箱
+	var collision = collision_right if not is_flying_left else collision_left
+	if not collision or not collision.shape or collision.disabled:
 		return
 	
 	var shape = collision.shape

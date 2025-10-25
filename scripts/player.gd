@@ -8,6 +8,10 @@ extends CharacterBody2D
 # 获取动画节点
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
+# 法术系统节点引用
+@onready var spell_caster: SpellCaster = $SpellCaster
+@onready var game_library: GameSpellLibrary = $GameSpellLibrary
+
 # 翻滚状态
 var is_rolling: bool = false
 var roll_timer: float = 0.0
@@ -18,11 +22,85 @@ var roll_cooldown_duration: float = 2.0  # 翻滚冷却时间
 # 输入控制
 var input_enabled: bool = true
 
+# 施法相关
+var current_spell: SpellData = null  # 当前选中的法术
+
 func _ready():
 	# 设置玩家初始位置为 (150, 150)
 	position = Vector2(150, 150)
 	# 设置初始动画为idle
 	animated_sprite.play("idle")
+	
+	# 初始化法术系统
+	call_deferred("_initialize_spell_system")
+
+func _initialize_spell_system():
+	# 等待一帧，确保所有节点都已初始化
+	await get_tree().process_frame
+	
+	# 获取法术库
+	if not game_library:
+		game_library = get_node_or_null("GameSpellLibrary")
+	
+	if not spell_caster:
+		spell_caster = get_node_or_null("SpellCaster")
+	
+	# 设置默认法术（火球术）
+	if game_library:
+		current_spell = game_library.get_spell_library().get_spell_by_id("fire_ball")
+		if current_spell:
+			print("Player: 默认法术设置为 ", current_spell.spell_name)
+		else:
+			print("Player: 警告 - 未找到火球法术")
+	else:
+		print("Player: 警告 - 未找到法术库")
+	
+	if spell_caster:
+		print("Player: 法术施放系统已就绪")
+	else:
+		print("Player: 警告 - 未找到法术施放器")
+
+# 处理输入（施法）
+func _input(event):
+	# 检查输入是否被暂停
+	if not input_enabled or has_meta("input_paused"):
+		return
+	
+	# 鼠标左键施法
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			cast_spell_to_mouse()
+
+# 向鼠标位置施法
+func cast_spell_to_mouse():
+	if not current_spell or not spell_caster:
+		print("Player: 无法施法 - 缺少法术或施法器")
+		return
+	
+	# 获取鼠标屏幕坐标
+	var mouse_screen_pos = get_viewport().get_mouse_position()
+	
+	# 获取相机
+	var camera = get_viewport().get_camera_2d()
+	if not camera:
+		print("Player: 错误 - 未找到相机")
+		return
+	
+	# 将屏幕坐标转换为世界坐标
+	var mouse_world_pos = camera.to_global(mouse_screen_pos - get_viewport().get_visible_rect().size / 2)
+	
+	# 计算施法方向
+	var direction_vector = mouse_world_pos - global_position
+	var spell_direction = direction_vector.normalized()
+	
+	# 施法
+	print("Player: 施放 ", current_spell.spell_name)
+	var projectile = spell_caster.cast_spell(current_spell, global_position, spell_direction)
+	
+	if projectile:
+		print("Player: 法术施放成功")
+	else:
+		print("Player: 法术施放失败")
 
 func _physics_process(delta):
 	# 检查输入是否被暂停

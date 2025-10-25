@@ -1,7 +1,10 @@
-[gd_scene load_steps=29 format=3 uid="uid://bu1blwum7plry"]
+[gd_scene load_steps=32 format=3 uid="uid://bu1blwum7plry"]
 
 [ext_resource type="Script" uid="uid://dadumy7af4wy6" path="res://scripts/player.gd" id="1_mjc1j"]
 [ext_resource type="Texture2D" uid="uid://l2h8nxr4pafs" path="res://asset/player1.png" id="1_uwcw8"]
+[ext_resource type="Script" uid="uid://bftectopr1vtv" path="res://scripts/camera_2d.gd" id="3_3j5vv"]
+[ext_resource type="Script" uid="uid://biwrjop0fu38c" path="res://scripts/spells/game_spell_library.gd" id="4_qav0y"]
+[ext_resource type="Script" path="res://scripts/spells/spell_caster.gd" id="5_spell_caster"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_do3ar"]
 atlas = ExtResource("1_uwcw8")
@@ -209,3 +212,12 @@ frame_progress = 1.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 1.5)
 shape = SubResource("RectangleShape2D_uwcw8")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_3j5vv")
+
+[node name="GameSpellLibrary" type="Node" parent="."]
+script = ExtResource("4_qav0y")
+
+[node name="SpellCaster" type="Node" parent="."]
+script = ExtResource("5_spell_caster")
