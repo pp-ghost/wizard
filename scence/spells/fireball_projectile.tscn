@@ -227,7 +227,6 @@ position = Vector2(5, 1)
 rotation = -1.5777428
 scale = Vector2(1.5, 1.5)
 shape = SubResource("CapsuleShape2D_t3n7v")
-metadata/_edit_lock_ = true
 
 [node name="CollisionShape_left" type="CollisionShape2D" parent="."]
 position = Vector2(-24, 1)
@@ -238,4 +237,3 @@ shape = SubResource("CapsuleShape2D_f1g4s")
 position = Vector2(-9, -19)
 sprite_frames = SubResource("SpriteFrames_3eahu")
 animation = &"spawn_right"
-metadata/_edit_lock_ = true

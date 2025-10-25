@@ -24,6 +24,8 @@ var input_enabled: bool = true
 
 # 施法相关
 var available_spells: Array[SpellData] = []  # 可用法术列表
+var spell_cooldowns: Dictionary = {}  # 法术冷却时间记录
+var spell_input_states: Dictionary = {}  # 法术按键状态记录
 
 func _ready():
 	# 设置玩家初始位置为 (150, 150)
@@ -67,17 +69,43 @@ func _input(event):
 	if not input_enabled or has_meta("input_paused"):
 		return
 	
-	# 按键施法
+	# 处理按键按下
 	if event is InputEventKey and event.pressed:
 		var spell = game_library.get_spell_by_key(event.keycode)
 		if spell:
-			cast_spell_to_mouse(spell)
+			# 只有在法术可用时才记录按键状态和施法
+			if can_cast_spell(spell):
+				spell_input_states[spell.spell_id] = true
+				cast_spell_to_mouse(spell)
+			else:
+				# 法术不可用时，不记录按键状态
+				print("Player: 法术不可用 - ", spell.spell_name)
 	
-	# 鼠标按键施法
+	# 处理按键释放
+	if event is InputEventKey and not event.pressed:
+		var spell = game_library.get_spell_by_key(event.keycode)
+		if spell and spell_input_states.has(spell.spell_id) and spell_input_states[spell.spell_id]:
+			spell_input_states[spell.spell_id] = false
+			start_spell_cooldown(spell)
+	
+	# 处理鼠标按键按下
 	if event is InputEventMouseButton and event.pressed:
 		var spell = game_library.get_spell_by_key(event.button_index)
 		if spell:
-			cast_spell_to_mouse(spell)
+			# 只有在法术可用时才记录按键状态和施法
+			if can_cast_spell(spell):
+				spell_input_states[spell.spell_id] = true
+				cast_spell_to_mouse(spell)
+			else:
+				# 法术不可用时，不记录按键状态
+				print("Player: 法术不可用 - ", spell.spell_name)
+	
+	# 处理鼠标按键释放
+	if event is InputEventMouseButton and not event.pressed:
+		var spell = game_library.get_spell_by_key(event.button_index)
+		if spell and spell_input_states.has(spell.spell_id) and spell_input_states[spell.spell_id]:
+			spell_input_states[spell.spell_id] = false
+			start_spell_cooldown(spell)
 
 # 向鼠标位置施法
 func cast_spell_to_mouse(spell: SpellData):
@@ -109,6 +137,42 @@ func cast_spell_to_mouse(spell: SpellData):
 		print("Player: 法术施放成功")
 	else:
 		print("Player: 法术施放失败")
+
+# 检查法术是否可以施放（冷却时间检查）
+func can_cast_spell(spell: SpellData) -> bool:
+	if not spell:
+		return false
+	
+	# 检查法术是否解锁
+	if not spell.is_unlocked:
+		print("Player: 法术未解锁 - ", spell.spell_name)
+		return false
+	
+	# 检查冷却时间
+	if spell_cooldowns.has(spell.spell_id) and spell_cooldowns[spell.spell_id] > 0:
+		print("Player: 法术冷却中 - ", spell.spell_name, " 剩余时间: ", spell_cooldowns[spell.spell_id])
+		return false
+	
+	return true
+
+# 开始法术冷却
+func start_spell_cooldown(spell: SpellData):
+	if not spell:
+		return
+	
+	# 设置冷却时间
+	spell_cooldowns[spell.spell_id] = spell.cooldown_time
+	print("Player: 开始法术冷却 - ", spell.spell_name, " 冷却时间: ", spell.cooldown_time, "秒")
+
+# 更新法术冷却时间
+func _process(delta):
+	# 更新所有法术的冷却时间
+	for spell_id in spell_cooldowns.keys():
+		if spell_cooldowns[spell_id] > 0:
+			spell_cooldowns[spell_id] -= delta
+			if spell_cooldowns[spell_id] <= 0:
+				spell_cooldowns[spell_id] = 0
+				print("Player: 法术冷却完成 - ", spell_id)
 
 func _physics_process(delta):
 	# 检查输入是否被暂停

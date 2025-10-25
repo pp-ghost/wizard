@@ -10,6 +10,12 @@ extends Control
 @onready var save_button: Button = $MainPanel/Buttons/SaveButton
 @onready var cancel_button: Button = $MainPanel/Buttons/CancelButton
 
+# 特殊效果UI节点
+@onready var slow_effect_container: HBoxContainer = $MainPanel/Parameters/SlowEffectContainer
+@onready var slow_effect_spinbox: SpinBox = $MainPanel/Parameters/SlowEffectContainer/SlowEffectSpinBox
+@onready var slow_duration_container: HBoxContainer = $MainPanel/Parameters/SlowDurationContainer
+@onready var slow_duration_spinbox: SpinBox = $MainPanel/Parameters/SlowDurationContainer/SlowDurationSpinBox
+
 # 当前编辑的法术
 var current_spell: SpellData = null
 
@@ -76,6 +82,9 @@ func load_spell_data():
 			key_option.selected = key_index
 		else:
 			key_option.selected = 0  # 默认选择第一个
+	
+	# 根据法术类型显示特定参数
+	update_parameter_visibility()
 
 # 初始化按键选项
 func initialize_key_options():
@@ -93,6 +102,23 @@ func find_key_index(key: int) -> int:
 		if key_options[i].key == key:
 			return i
 	return -1
+
+# 更新参数可见性
+func update_parameter_visibility():
+	if not current_spell:
+		return
+	
+	# 冰锥术显示减速参数
+	if current_spell.spell_id == "ice_shard":
+		slow_effect_container.visible = true
+		slow_duration_container.visible = true
+		if slow_effect_spinbox:
+			slow_effect_spinbox.value = current_spell.slow_effect
+		if slow_duration_spinbox:
+			slow_duration_spinbox.value = current_spell.slow_duration
+	else:
+		slow_effect_container.visible = false
+		slow_duration_container.visible = false
 
 # 保存按钮处理
 func _on_save_pressed():
@@ -115,6 +141,13 @@ func _on_save_pressed():
 	var selected_index = key_option.selected
 	if selected_index >= 0 and selected_index < key_options.size():
 		current_spell.trigger_key = key_options[selected_index].key
+	
+	# 更新特殊效果参数（仅对冰锥术）
+	if current_spell.spell_id == "ice_shard":
+		if slow_effect_spinbox:
+			current_spell.slow_effect = slow_effect_spinbox.value
+		if slow_duration_spinbox:
+			current_spell.slow_duration = slow_duration_spinbox.value
 	
 	# 确保法术已解锁
 	current_spell.is_unlocked = true

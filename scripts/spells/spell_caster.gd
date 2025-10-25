@@ -31,12 +31,17 @@ func ensure_scenes_loaded():
 # 加载投射物场景
 func load_projectile_scenes():
 	fireball_scene = preload("res://scence/spells/fireball_projectile.tscn")
-	# ice_shard_scene = preload("res://scence/spells/ice_shard_projectile.tscn")  # 稍后添加
+	ice_shard_scene = preload("res://scence/spells/ice_shard_projectile.tscn")
 	
 	if fireball_scene:
 		print("SpellCaster: 火球场景加载成功")
 	else:
 		print("SpellCaster: 错误 - 火球场景加载失败")
+	
+	if ice_shard_scene:
+		print("SpellCaster: 冰锥场景加载成功")
+	else:
+		print("SpellCaster: 错误 - 冰锥场景加载失败")
 	
 	print("SpellCaster: 投射物场景已加载")
 

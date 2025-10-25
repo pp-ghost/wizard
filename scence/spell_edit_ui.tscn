@@ -137,6 +137,36 @@ max_value = 10.0
 step = 0.1
 value = 1.5
 
+[node name="SlowEffectContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="SlowEffectLabel" type="Label" parent="MainPanel/Parameters/SlowEffectContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "减速效果:"
+
+[node name="SlowEffectSpinBox" type="SpinBox" parent="MainPanel/Parameters/SlowEffectContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="SlowDurationContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
+layout_mode = 2
+
+[node name="SlowDurationLabel" type="Label" parent="MainPanel/Parameters/SlowDurationContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "减速时间:"
+
+[node name="SlowDurationSpinBox" type="SpinBox" parent="MainPanel/Parameters/SlowDurationContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 10.0
+step = 0.1
+value = 3.0
+
 [node name="KeyContainer" type="HBoxContainer" parent="MainPanel/Parameters"]
 layout_mode = 2
 
@@ -156,10 +186,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -119.0
-offset_top = -134.0
-offset_right = 121.0
-offset_bottom = -94.0
+offset_left = -238.0
+offset_top = -369.0
+offset_right = 2.0
+offset_bottom = -329.0
 grow_horizontal = 2
 grow_vertical = 0
 

@@ -45,6 +45,10 @@ func create_ice_shard():
 	ice_shard.trigger_key = KEY_E  # 按E键触发
 	ice_shard.is_unlocked = true
 	
+	# 冰锥术特有参数
+	ice_shard.slow_effect = 0.5      # 减速50%
+	ice_shard.slow_duration = 3.0    # 持续3秒
+	
 	all_spells.append(ice_shard)
 
 # 获取法术

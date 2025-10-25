@@ -12,6 +12,7 @@ var direction: Vector2 = Vector2.RIGHT
 var distance_traveled: float = 0.0
 var is_hitting: bool = false  # 是否正在播放hit动画
 var is_flying_left: bool = false  # 是否向左飞行
+var current_spell_id: String = ""  # 当前法术ID
 
 # 调试开关
 @export var debug_show_collision: bool = false  # 是否显示碰撞箱
@@ -67,14 +68,30 @@ func setup_projectile(spell_data: SpellData, start_pos: Vector2, target_directio
 	damage = spell_data.damage
 	range = spell_data.range
 	direction = target_direction.normalized()
+	current_spell_id = spell_data.spell_id
 	
-	# 设置火球位置
+	# 设置投射物位置
 	position = start_pos
 	
-	# 判断是否向左飞行
-	var angle = direction.angle()
-	var angle_deg = rad_to_deg(angle)
-	is_flying_left = (angle_deg > 90 and angle_deg <= 180) or (angle_deg < -90 and angle_deg >= -180)
+	# 根据法术类型判断是否向左飞行
+	if current_spell_id == "ice_shard":
+		# 冰锥术永远保持向右飞行状态
+		is_flying_left = false
+	else:
+		# 其他法术（如火球术）正常判断飞行方向
+		var angle = direction.angle()
+		var angle_deg = rad_to_deg(angle)
+		is_flying_left = (angle_deg > 90 and angle_deg <= 180) or (angle_deg < -90 and angle_deg >= -180)
+	
+	# 根据法术类型调整生成位置偏移
+	match spell_data.spell_id:
+		"fire_ball":
+			if is_flying_left:
+				position += Vector2(0, 0)  # 火球向左飞行时的偏移
+		"ice_shard":
+			# 冰锥术不进行向左飞行修正，直接使用正常位置
+			pass
+		# 可以在这里添加更多法术的位置偏移
 	
 	# 更新碰撞箱配置
 	update_rotation()
@@ -206,11 +223,16 @@ func update_rotation():
 	# 根据方向向量计算旋转角度
 	var angle = direction.angle()
 	
-	# 如果向左飞行，需要额外旋转180度来修正动画方向
-	if is_flying_left:
-		rotation = angle + PI  # 向左飞时额外旋转180度
+	# 根据法术类型决定旋转方式
+	if current_spell_id == "ice_shard":
+		# 冰锥术始终使用正常旋转，不进行向左飞行修正
+		rotation = angle
 	else:
-		rotation = angle  # 向右飞时直接使用角度
+		# 其他法术（如火球术）进行向左飞行修正
+		if is_flying_left:
+			rotation = angle + PI  # 向左飞时额外旋转180度
+		else:
+			rotation = angle  # 向右飞时直接使用角度
 	
 	# 根据飞行方向启用对应的碰撞箱
 	if is_flying_left:

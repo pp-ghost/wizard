@@ -14,6 +14,10 @@ extends Resource
 @export var trigger_key: int = KEY_1  # 触发按键
 @export var is_unlocked: bool = true
 
+# 特殊效果参数
+@export var slow_effect: float = 0.0      # 减速效果强度 (0.0-1.0)
+@export var slow_duration: float = 0.0    # 减速持续时间 (秒)
+
 
 
 # 构造函数
@@ -31,4 +35,7 @@ func get_info_string() -> String:
 	info += "伤害: " + str(damage) + "\n"
 	info += "速度: " + str(speed) + "\n"
 	info += "射程: " + str(range) + "\n"
+	if slow_effect > 0.0:
+		info += "减速效果: " + str(slow_effect * 100) + "%\n"
+		info += "减速时间: " + str(slow_duration) + "秒\n"
 	return info
