@@ -321,6 +321,7 @@ func _process(delta):
 	if debug_show_collision:
 		queue_redraw()  # 每帧重绘以跟随碰撞箱变化
 
+
 # 获取投射物信息
 func get_projectile_info() -> String:
 	return "投射物信息:\n速度: " + str(speed) + "\n伤害: " + str(damage) + "\n射程: " + str(range) + "\n已飞行距离: " + str(distance_traveled)
