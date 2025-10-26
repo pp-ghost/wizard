@@ -157,7 +157,7 @@ func cast_spell_to_mouse(spell: SpellData):
 	animated_sprite.play("attack")
 	
 	# 等待攻击动画播放到第4帧
-	await get_tree().create_timer(0.2).timeout  # 假设每帧0.1秒，第4帧是0.4秒
+	await get_tree().create_timer(0.05).timeout  # 假设每帧0.1秒，第4帧是0.4秒
 	
 	# 在第4帧生成法术
 	var projectile = spell_caster.cast_spell(spell, global_position, spell_direction)
@@ -347,11 +347,9 @@ func send_movement_event():
 		}
 		
 		# 发送移动事件到服务器
-		var network_manager = get_node("../NetworkManager")
+		var network_manager = get_node_or_null("../NetworkManager")
 		if network_manager:
 			network_manager.rpc("receive_player_event", event_data)
-		else:
-			print("Player: 错误 - 未找到NetworkManager节点")
 		
 		last_position = current_position
 
@@ -370,11 +368,9 @@ func send_animation_event(animation_name: String):
 	}
 	
 	# 发送动画事件（调试输出已关闭）
-	var network_manager = get_node("../NetworkManager")
+	var network_manager = get_node_or_null("../NetworkManager")
 	if network_manager:
 		network_manager.rpc("receive_player_event", event_data)
-	else:
-		print("Player: 错误 - 未找到NetworkManager节点")
 
 # 发送状态变化事件
 func send_state_event(state_type: String, state_value: bool):
@@ -390,7 +386,7 @@ func send_state_event(state_type: String, state_value: bool):
 	}
 	
 	print("Player: 发送状态事件 - 类型:", state_type, " 值:", state_value)
-	var network_manager = get_node("../NetworkManager")
+	var network_manager = get_node_or_null("../NetworkManager")
 	if network_manager:
 		network_manager.rpc("receive_player_event", event_data)
 
@@ -407,7 +403,7 @@ func send_spell_event(spell_data: Dictionary):
 	}
 	
 	print("Player: 发送法术事件 - 法术:", spell_data)
-	var network_manager = get_node("../NetworkManager")
+	var network_manager = get_node_or_null("../NetworkManager")
 	if network_manager:
 		network_manager.rpc("receive_player_event", event_data)
 

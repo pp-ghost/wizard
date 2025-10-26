@@ -14,6 +14,12 @@ signal connection_failed()
 signal server_disconnected()
 
 func _ready():
+	# 检查是否有网络连接，如果没有连接则跳过初始化
+	if not multiplayer.has_multiplayer_peer() or not multiplayer.multiplayer_peer:
+		print("ClientNetwork: 没有网络连接，禁用客户端网络管理器")
+		set_process_mode(Node.PROCESS_MODE_DISABLED)
+		return
+	
 	print("ClientNetwork: 客户端网络管理器已初始化")
 	print("ClientNetwork: 检查现有网络连接...")
 	

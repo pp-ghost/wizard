@@ -54,7 +54,18 @@ func start_server(port: int = 7000) -> bool:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	
-	print("HostNetwork: 服务器已启动 - IP:", get_local_ip(), " 端口:", port)
+	# 打印所有网络接口信息
+	print("HostNetwork: ========================================")
+	print("HostNetwork: 服务器启动信息:")
+	print("HostNetwork: 监听端口:", port)
+	print("HostNetwork: 本地IP:", get_local_ip())
+	print("HostNetwork: 所有网络接口:")
+	var all_addresses = IP.get_local_addresses()
+	for addr in all_addresses:
+		print("HostNetwork:   - ", addr)
+	print("HostNetwork: 注意: 服务器监听所有网络接口(0.0.0.0)")
+	print("HostNetwork: ========================================")
+	
 	server_started.emit(port)
 	return true
 
@@ -81,7 +92,8 @@ func get_local_ip() -> String:
 
 # 玩家连接事件
 func _on_peer_connected(peer_id: int):
-	print("HostNetwork: 玩家连接 - ID:", peer_id)
+	print("HostNetwork: =================================")
+	print("HostNetwork: 玩家连接成功 - ID:", peer_id)
 	
 	var player_info = {
 		"peer_id": peer_id,
@@ -93,6 +105,7 @@ func _on_peer_connected(peer_id: int):
 	player_count += 1
 	
 	print("HostNetwork: 当前在线玩家数:", player_count)
+	print("HostNetwork: =================================")
 	player_connected.emit(peer_id, player_info)
 	
 	# 发送测试RPC给新连接的客户端
@@ -101,6 +114,7 @@ func _on_peer_connected(peer_id: int):
 
 # 玩家断开连接事件
 func _on_peer_disconnected(peer_id: int):
+	print("HostNetwork: =================================")
 	print("HostNetwork: 玩家断开连接 - ID:", peer_id)
 	
 	if connected_players.has(peer_id):
@@ -113,6 +127,7 @@ func _on_peer_disconnected(peer_id: int):
 			spawn_manager.release_spawn_point(peer_id)
 	
 	print("HostNetwork: 当前在线玩家数:", player_count)
+	print("HostNetwork: =================================")
 	player_disconnected.emit(peer_id)
 
 # 获取服务器信息
