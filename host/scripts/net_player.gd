@@ -111,7 +111,7 @@ func sync_animation(animation_name: String):
 # 同步面向方向
 func sync_facing_direction(direction: int):
 	target_facing_direction = direction
-	print("NetPlayer: 设置面向方向 - ID:", player_id, " 方向:", target_facing_direction)
+	# 设置面向方向
 
 # 同步法术施放
 func sync_spell_cast(spell_data: Dictionary):

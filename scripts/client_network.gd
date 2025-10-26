@@ -184,13 +184,9 @@ func handle_movement_event(player_id: int, event_data: Dictionary):
 
 # 处理动画事件
 func handle_animation_event(player_id: int, event_data: Dictionary):
-	print("ClientNetwork: ===== 处理动画事件 =====")
-	print("ClientNetwork: 玩家ID:", player_id)
-	print("ClientNetwork: 事件数据:", event_data)
-	
+	# 处理动画事件
 	# 如果网络玩家不存在，创建它
 	if not network_players.has(player_id):
-		print("ClientNetwork: 网络玩家不存在，创建新玩家 - ID:", player_id)
 		create_network_player(player_id, "Player " + str(player_id))
 	
 	# 更新网络玩家动画和面向方向
@@ -199,14 +195,10 @@ func handle_animation_event(player_id: int, event_data: Dictionary):
 		var animation = event_data.get("animation", "idle")
 		var facing_direction = event_data.get("facing_direction", 1)
 		
-		print("ClientNetwork: 准备同步动画 - 动画:", animation, " 方向:", facing_direction)
 		net_player_instance.sync_animation(animation)
 		net_player_instance.sync_facing_direction(facing_direction)
-		print("ClientNetwork: 动画同步完成 - ID:", player_id)
 	else:
 		print("ClientNetwork: 错误 - 网络玩家创建失败 - ID:", player_id)
-	
-	print("ClientNetwork: ===== 动画事件处理完成 =====")
 
 # 处理状态事件
 func handle_state_event(player_id: int, event_data: Dictionary):

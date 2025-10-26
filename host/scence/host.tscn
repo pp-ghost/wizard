@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://host/scence/server_info_ui.tscn" id="6_server_info"]
 [ext_resource type="PackedScene" uid="uid://bhug8i3fy4ljt" path="res://host/scence/net_player.tscn" id="6_u0wes"]
 [ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="7_player"]
+[ext_resource type="Script" path="res://scripts/spawn_manager.gd" id="8_spawn_manager"]
 
 [node name="host" type="Node"]
 script = ExtResource("1_bmd1u")
@@ -17,12 +18,14 @@ script = ExtResource("5_network")
 [node name="ClientNetworkManager" type="Node" parent="."]
 script = ExtResource("8_client_network")
 
+[node name="SpawnManager" type="Node" parent="."]
+script = ExtResource("8_spawn_manager")
+
 [node name="ServerInfoUI" parent="." instance=ExtResource("6_server_info")]
 grow_vertical = 0
 
 [node name="fight" parent="." instance=ExtResource("5_oywl2")]
 
 [node name="player" parent="." instance=ExtResource("7_player")]
-position = Vector2(150, 150)
 
 [node name="net_player" parent="." instance=ExtResource("6_u0wes")]

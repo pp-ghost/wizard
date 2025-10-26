@@ -106,6 +106,11 @@ func _on_peer_disconnected(peer_id: int):
 	if connected_players.has(peer_id):
 		connected_players.erase(peer_id)
 		player_count -= 1
+		
+		# 释放玩家的生成点
+		var spawn_manager = get_node_or_null("../SpawnManager")
+		if spawn_manager:
+			spawn_manager.release_spawn_point(peer_id)
 	
 	print("HostNetwork: 当前在线玩家数:", player_count)
 	player_disconnected.emit(peer_id)
@@ -148,22 +153,13 @@ func sync_player_event(event_data: Dictionary):
 		print("HostNetwork: 服务端模式，跳过客户端RPC处理")
 		return
 	
-	print("HostNetwork: ===== 客户端收到服务端转发的RPC =====")
-	print("HostNetwork: 事件数据:", event_data)
-	print("HostNetwork: 发送者ID:", multiplayer.get_remote_sender_id())
-	
+	# 处理服务端转发的RPC
 	var player_id = event_data.get("player_id", 0)
 	var event_type = event_data.get("event_type", "unknown")
 	
-	print("HostNetwork: 接收玩家事件 - ID:", player_id, " 类型:", event_type)
-	print("HostNetwork: 本地玩家ID:", multiplayer.get_unique_id())
-	
 	# 跳过本地玩家的事件
 	if player_id == multiplayer.get_unique_id():
-		print("HostNetwork: 跳过本地玩家事件")
 		return
-	
-	print("HostNetwork: 开始处理事件 - 类型:", event_type)
 	
 	# 根据事件类型处理
 	match event_type:
@@ -171,7 +167,7 @@ func sync_player_event(event_data: Dictionary):
 			print("HostNetwork: 匹配到movement事件，调用handle_movement_event")
 			handle_movement_event(player_id, event_data)
 		"animation":
-			print("HostNetwork: 匹配到animation事件，调用handle_animation_event")
+			# 处理动画事件
 			handle_animation_event(player_id, event_data)
 		"state":
 			print("HostNetwork: 匹配到state事件，调用handle_state_event")
@@ -182,7 +178,7 @@ func sync_player_event(event_data: Dictionary):
 		_:
 			print("HostNetwork: 未知事件类型:", event_type)
 	
-	print("HostNetwork: ===== 客户端RPC处理完成 =====")
+	# 客户端RPC处理完成
 
 # 处理移动事件（客户端模式）
 func handle_movement_event(player_id: int, event_data: Dictionary):
@@ -199,7 +195,7 @@ func handle_movement_event(player_id: int, event_data: Dictionary):
 
 # 处理动画事件（客户端模式）
 func handle_animation_event(player_id: int, event_data: Dictionary):
-	print("HostNetwork: 处理动画事件 - ID:", player_id)
+	# 处理动画事件
 	var client_network = get_node("../ClientNetworkManager")
 	if client_network:
 		client_network.handle_animation_event(player_id, event_data)

@@ -38,8 +38,8 @@ func _ready():
 	print("Player: 网络状态:", multiplayer.has_multiplayer_peer())
 	print("Player: 是否为服务器:", multiplayer.is_server())
 	
-	# 设置玩家初始位置为 (150, 150)
-	position = Vector2(150, 150)
+	# 使用随机生成系统设置玩家位置
+	set_spawn_position()
 	# 设置初始动画为idle
 	animated_sprite.play("idle")
 	
@@ -170,6 +170,21 @@ func cast_spell_to_mouse(spell: SpellData):
 		print("Player: 法术施放成功")
 	else:
 		print("Player: 法术施放失败")
+
+# 设置玩家生成位置
+func set_spawn_position():
+	var player_id = multiplayer.get_unique_id()
+	
+	# 获取生成点管理器
+	var spawn_manager = get_node_or_null("../SpawnManager")
+	if spawn_manager:
+		var spawn_position = spawn_manager.get_available_spawn_point(player_id)
+		position = spawn_position
+		print("Player: 玩家", player_id, "生成在位置:", spawn_position)
+	else:
+		# 如果没有找到生成点管理器，使用默认位置
+		position = Vector2(150, 150)
+		print("Player: 警告 - 未找到生成点管理器，使用默认位置:", position)
 
 # 检查法术是否可以施放（冷却时间检查）
 func can_cast_spell(spell: SpellData) -> bool:
