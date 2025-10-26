@@ -138,7 +138,7 @@ func clear_all_network_players():
 	network_players.clear()
 
 # RPC：接收服务端转发的玩家事件
-@rpc("authority", "unreliable")
+@rpc("any_peer", "unreliable")
 func sync_player_event(event_data: Dictionary):
 	var player_id = event_data.get("player_id", 0)
 	var event_type = event_data.get("event_type", "unknown")
@@ -172,32 +172,41 @@ func handle_movement_event(player_id: int, event_data: Dictionary):
 		print("ClientNetwork: 网络玩家不存在，创建新玩家 - ID:", player_id)
 		create_network_player(player_id, "Player " + str(player_id))
 	
-	# 更新网络玩家位置
+	# 更新网络玩家位置和速度
 	if network_players.has(player_id):
 		var net_player_instance = network_players[player_id]
 		var position = event_data.get("position", Vector2.ZERO)
 		var velocity = event_data.get("velocity", Vector2.ZERO)
 		
 		net_player_instance.sync_position(position)
-		print("ClientNetwork: 更新玩家位置 - ID:", player_id, " 位置:", position)
+		net_player_instance.sync_velocity(velocity)
+		print("ClientNetwork: 更新玩家位置和速度 - ID:", player_id, " 位置:", position, " 速度:", velocity)
 
 # 处理动画事件
 func handle_animation_event(player_id: int, event_data: Dictionary):
-	print("ClientNetwork: 处理动画事件 - ID:", player_id)
+	print("ClientNetwork: ===== 处理动画事件 =====")
+	print("ClientNetwork: 玩家ID:", player_id)
+	print("ClientNetwork: 事件数据:", event_data)
 	
 	# 如果网络玩家不存在，创建它
 	if not network_players.has(player_id):
 		print("ClientNetwork: 网络玩家不存在，创建新玩家 - ID:", player_id)
 		create_network_player(player_id, "Player " + str(player_id))
 	
-	# 更新网络玩家动画
+	# 更新网络玩家动画和面向方向
 	if network_players.has(player_id):
 		var net_player_instance = network_players[player_id]
 		var animation = event_data.get("animation", "idle")
 		var facing_direction = event_data.get("facing_direction", 1)
 		
+		print("ClientNetwork: 准备同步动画 - 动画:", animation, " 方向:", facing_direction)
 		net_player_instance.sync_animation(animation)
-		print("ClientNetwork: 更新玩家动画 - ID:", player_id, " 动画:", animation)
+		net_player_instance.sync_facing_direction(facing_direction)
+		print("ClientNetwork: 动画同步完成 - ID:", player_id)
+	else:
+		print("ClientNetwork: 错误 - 网络玩家创建失败 - ID:", player_id)
+	
+	print("ClientNetwork: ===== 动画事件处理完成 =====")
 
 # 处理状态事件
 func handle_state_event(player_id: int, event_data: Dictionary):

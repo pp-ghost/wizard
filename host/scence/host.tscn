@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1gx84ufwkqe0"]
+[gd_scene load_steps=7 format=3 uid="uid://b1gx84ufwkqe0"]
 
 [ext_resource type="Script" uid="uid://bc3km3skqjflh" path="res://host/scripts/host.gd" id="1_bmd1u"]
 [ext_resource type="Script" uid="uid://p5p5o2ijcgmy" path="res://host/scripts/host_network.gd" id="5_network"]
+[ext_resource type="Script" uid="uid://dmokkap56hgxt" path="res://scripts/client_network.gd" id="8_client_network"]
+[ext_resource type="PackedScene" uid="uid://cjhuu5etmbh0h" path="res://scence/fight.tscn" id="5_oywl2"]
 [ext_resource type="PackedScene" path="res://host/scence/server_info_ui.tscn" id="6_server_info"]
+[ext_resource type="PackedScene" uid="uid://bhug8i3fy4ljt" path="res://host/scence/net_player.tscn" id="6_u0wes"]
 [ext_resource type="PackedScene" uid="uid://bu1blwum7plry" path="res://scence/player.tscn" id="7_player"]
 
 [node name="host" type="Node"]
@@ -11,8 +14,15 @@ script = ExtResource("1_bmd1u")
 [node name="NetworkManager" type="Node" parent="."]
 script = ExtResource("5_network")
 
+[node name="ClientNetworkManager" type="Node" parent="."]
+script = ExtResource("8_client_network")
+
 [node name="ServerInfoUI" parent="." instance=ExtResource("6_server_info")]
 grow_vertical = 0
 
+[node name="fight" parent="." instance=ExtResource("5_oywl2")]
+
 [node name="player" parent="." instance=ExtResource("7_player")]
 position = Vector2(150, 150)
+
+[node name="net_player" parent="." instance=ExtResource("6_u0wes")]

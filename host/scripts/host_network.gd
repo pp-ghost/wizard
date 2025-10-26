@@ -17,9 +17,26 @@ signal server_stopped()
 
 func _ready():
 	print("HostNetwork: 服务端网络管理器已初始化")
+	
+	# 检查运行模式
+	if is_client_mode():
+		print("HostNetwork: 检测到客户端模式，跳过服务端初始化")
+		return
+	
+	print("HostNetwork: 服务端模式，开始初始化")
+
+# 检查是否为客户端模式
+func is_client_mode() -> bool:
+	# 如果multiplayer.get_unique_id() != 1，说明是客户端
+	return multiplayer.has_multiplayer_peer() and multiplayer.get_unique_id() != 1
 
 # 启动服务端
 func start_server(port: int = 7000) -> bool:
+	# 检查运行模式
+	if is_client_mode():
+		print("HostNetwork: 客户端模式，跳过服务端启动")
+		return false
+	
 	server_port = port
 	
 	# 创建ENet对等体
@@ -113,14 +130,102 @@ func is_server_running() -> bool:
 # 简单的测试RPC
 @rpc("any_peer", "unreliable")
 func test_simple_rpc(message: String):
+	# 检查运行模式
+	if is_client_mode():
+		print("HostNetwork: 客户端模式，跳过测试RPC处理")
+		return
+	
 	print("HostNetwork: ===== 收到测试RPC =====")
 	print("HostNetwork: 消息:", message)
 	print("HostNetwork: 发送者ID:", multiplayer.get_remote_sender_id())
 	print("HostNetwork: ===== 测试RPC完成 =====")
 
+# RPC：接收服务端转发的玩家事件（客户端模式）
+@rpc("any_peer", "unreliable")
+func sync_player_event(event_data: Dictionary):
+	# 检查运行模式
+	if not is_client_mode():
+		print("HostNetwork: 服务端模式，跳过客户端RPC处理")
+		return
+	
+	print("HostNetwork: ===== 客户端收到服务端转发的RPC =====")
+	print("HostNetwork: 事件数据:", event_data)
+	print("HostNetwork: 发送者ID:", multiplayer.get_remote_sender_id())
+	
+	var player_id = event_data.get("player_id", 0)
+	var event_type = event_data.get("event_type", "unknown")
+	
+	print("HostNetwork: 接收玩家事件 - ID:", player_id, " 类型:", event_type)
+	print("HostNetwork: 本地玩家ID:", multiplayer.get_unique_id())
+	
+	# 跳过本地玩家的事件
+	if player_id == multiplayer.get_unique_id():
+		print("HostNetwork: 跳过本地玩家事件")
+		return
+	
+	print("HostNetwork: 开始处理事件 - 类型:", event_type)
+	
+	# 根据事件类型处理
+	match event_type:
+		"movement":
+			print("HostNetwork: 匹配到movement事件，调用handle_movement_event")
+			handle_movement_event(player_id, event_data)
+		"animation":
+			print("HostNetwork: 匹配到animation事件，调用handle_animation_event")
+			handle_animation_event(player_id, event_data)
+		"state":
+			print("HostNetwork: 匹配到state事件，调用handle_state_event")
+			handle_state_event(player_id, event_data)
+		"spell":
+			print("HostNetwork: 匹配到spell事件，调用handle_spell_event")
+			handle_spell_event(player_id, event_data)
+		_:
+			print("HostNetwork: 未知事件类型:", event_type)
+	
+	print("HostNetwork: ===== 客户端RPC处理完成 =====")
+
+# 处理移动事件（客户端模式）
+func handle_movement_event(player_id: int, event_data: Dictionary):
+	print("HostNetwork: ===== 处理移动事件 =====")
+	print("HostNetwork: 玩家ID:", player_id)
+	print("HostNetwork: 事件数据:", event_data)
+	
+	# 这里需要创建网络玩家，但我们需要访问ClientNetworkManager
+	var client_network = get_node("../ClientNetworkManager")
+	if client_network:
+		client_network.handle_movement_event(player_id, event_data)
+	else:
+		print("HostNetwork: 错误 - 未找到ClientNetworkManager节点")
+
+# 处理动画事件（客户端模式）
+func handle_animation_event(player_id: int, event_data: Dictionary):
+	print("HostNetwork: 处理动画事件 - ID:", player_id)
+	var client_network = get_node("../ClientNetworkManager")
+	if client_network:
+		client_network.handle_animation_event(player_id, event_data)
+
+# 处理状态事件（客户端模式）
+func handle_state_event(player_id: int, event_data: Dictionary):
+	print("HostNetwork: 处理状态事件 - ID:", player_id)
+	var client_network = get_node("../ClientNetworkManager")
+	if client_network:
+		client_network.handle_state_event(player_id, event_data)
+
+# 处理法术事件（客户端模式）
+func handle_spell_event(player_id: int, event_data: Dictionary):
+	print("HostNetwork: 处理法术事件 - ID:", player_id)
+	var client_network = get_node("../ClientNetworkManager")
+	if client_network:
+		client_network.handle_spell_event(player_id, event_data)
+
 # RPC：接收客户端事件并转发
 @rpc("any_peer", "unreliable")
 func receive_player_event(event_data: Dictionary):
+	# 检查运行模式
+	if is_client_mode():
+		print("HostNetwork: 客户端模式，跳过RPC处理")
+		return
+	
 	print("HostNetwork: ===== 收到RPC调用 =====")
 	print("HostNetwork: 事件数据:", event_data)
 	

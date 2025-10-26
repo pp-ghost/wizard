@@ -154,20 +154,16 @@ func cast_spell_to_mouse(spell: SpellData):
 	
 	# 设置攻击状态并播放攻击动画
 	is_attacking = true
-	print("Player: 当前动画: ", animated_sprite.animation)
 	animated_sprite.play("attack")
-	print("Player: 播放攻击动画，新动画: ", animated_sprite.animation)
 	
 	# 等待攻击动画播放到第4帧
 	await get_tree().create_timer(0.2).timeout  # 假设每帧0.1秒，第4帧是0.4秒
-	print("Player: 攻击动画第4帧，生成法术")
 	
 	# 在第4帧生成法术
 	var projectile = spell_caster.cast_spell(spell, global_position, spell_direction)
 	
 	# 继续等待动画完成
 	await animated_sprite.animation_finished
-	print("Player: 攻击动画播放完成")
 	is_attacking = false
 	
 	if projectile:
@@ -296,6 +292,9 @@ func _physics_process(delta):
 	
 	# 事件驱动网络同步
 	send_movement_event()
+	
+	# 发送动画事件
+	send_animation_event(animated_sprite.animation)
 
 # 开始翻滚
 func start_roll():
@@ -312,7 +311,7 @@ func set_input_enabled(enabled: bool):
 var last_position: Vector2 = Vector2.ZERO
 var last_animation: String = ""
 var last_facing_direction: int = 1
-var position_threshold: float = 5.0  # 位置变化阈值
+var position_threshold: float = 2.5  # 位置变化阈值
 
 # 发送玩家移动事件
 func send_movement_event():
@@ -332,31 +331,13 @@ func send_movement_event():
 			"timestamp": Time.get_unix_time_from_system()
 		}
 		
-		print("Player: ===== 发送移动事件 =====")
-		print("Player: 发送时的玩家ID:", current_player_id)
-		print("Player: 网络状态:", multiplayer.has_multiplayer_peer())
-		print("Player: 是否为服务器:", multiplayer.is_server())
-		print("Player: 事件数据:", event_data)
-		print("Player: 发送移动事件 - 位置:", current_position)
-		
-		# 先发送一个简单的测试RPC
-		print("Player: 发送测试RPC...")
-		rpc("test_simple_rpc", "Hello from client!")
-		
-		# 尝试直接发送给服务器
-		print("Player: 直接发送给服务器...")
-		rpc_id(1, "test_simple_rpc", "Direct to server!")
-		
-		# 发送事件RPC（通过节点路径）
-		print("Player: 发送事件RPC...")
+		# 发送移动事件到服务器
 		var network_manager = get_node("../NetworkManager")
 		if network_manager:
 			network_manager.rpc("receive_player_event", event_data)
 		else:
 			print("Player: 错误 - 未找到NetworkManager节点")
 		
-		print("Player: RPC调用完成")
-		print("Player: ===== 移动事件发送完成 =====")
 		last_position = current_position
 
 # 发送动画变化事件
@@ -364,20 +345,21 @@ func send_animation_event(animation_name: String):
 	if not is_network_connected():
 		return
 	
-	if animation_name != last_animation:
-		var event_data = {
-			"event_type": "animation",
-			"player_id": multiplayer.get_unique_id(),
-			"animation": animation_name,
-			"facing_direction": facing_direction,
-			"timestamp": Time.get_unix_time_from_system()
-		}
-		
-		print("Player: 发送动画事件 - 动画:", animation_name)
-		var network_manager = get_node("../NetworkManager")
-		if network_manager:
-			network_manager.rpc("receive_player_event", event_data)
-		last_animation = animation_name
+	# 简化逻辑：每次都发送动画事件，不检查是否变化
+	var event_data = {
+		"event_type": "animation",
+		"player_id": multiplayer.get_unique_id(),
+		"animation": animation_name,
+		"facing_direction": facing_direction,
+		"timestamp": Time.get_unix_time_from_system()
+	}
+	
+	# 发送动画事件（调试输出已关闭）
+	var network_manager = get_node("../NetworkManager")
+	if network_manager:
+		network_manager.rpc("receive_player_event", event_data)
+	else:
+		print("Player: 错误 - 未找到NetworkManager节点")
 
 # 发送状态变化事件
 func send_state_event(state_type: String, state_value: bool):
@@ -422,6 +404,10 @@ func is_network_connected() -> bool:
 func play_animation(animation_name: String):
 	animated_sprite.play(animation_name)
 	send_animation_event(animation_name)
+
+# 简单的动画播放函数（不发送网络事件）
+func play_animation_local(animation_name: String):
+	animated_sprite.play(animation_name)
 
 # 测试RPC函数 - 用于验证RPC通信
 @rpc("any_peer", "unreliable")

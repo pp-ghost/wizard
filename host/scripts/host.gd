@@ -15,6 +15,13 @@ var server_info: Dictionary = {}
 func _ready():
 	print("Host: 主机管理器已初始化")
 	
+	# 检查运行模式
+	if is_client_mode():
+		print("Host: 检测到客户端模式，跳过服务端初始化")
+		return
+	
+	print("Host: 服务端模式，开始初始化")
+	
 	# 连接网络管理器信号
 	if host_network:
 		host_network.player_connected.connect(_on_player_connected)
@@ -106,6 +113,11 @@ func get_player_count() -> int:
 # 检查服务器状态
 func is_server_active() -> bool:
 	return is_server_running and host_network and host_network.is_server_running()
+
+# 检查是否为客户端模式
+func is_client_mode() -> bool:
+	# 如果multiplayer.get_unique_id() != 1，说明是客户端
+	return multiplayer.has_multiplayer_peer() and multiplayer.get_unique_id() != 1
 
 # 检查是否为服务端模式
 func is_server_mode() -> bool:
